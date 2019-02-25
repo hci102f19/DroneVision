@@ -5,7 +5,7 @@ from sklearn.cluster import KMeans as BaseKMeans
 class KMeans(object):
     def __init__(self):
         self.history = []
-        self.max_history = 3
+        self.max_history = 10
 
     def get_history(self):
         hst = []
@@ -20,7 +20,7 @@ class KMeans(object):
 
         points = self.get_history()
 
-        kmeans = BaseKMeans(n_clusters=1)
+        kmeans = BaseKMeans(n_clusters=5 if len(points) > 5 else 1)
         kmeans.fit(points)
 
         center = kmeans.cluster_centers_[0]
