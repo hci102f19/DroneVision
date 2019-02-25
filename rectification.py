@@ -445,12 +445,13 @@ def vis_edgelets(image, edgelets, show=True):
         plt.show()
 
 
-def vis_model(image, model, show=True):
+def vis_model(image, model, idx):
     """Helper function to visualize computed model."""
     import matplotlib.pyplot as plt
     edgelets = compute_edgelets(image)
     locations, directions, strengths = edgelets
     inliers = compute_votes(edgelets, model, 10) > 0
+    plt.cla()
 
     edgelets = (locations[inliers], directions[inliers], strengths[inliers])
     locations, directions, strengths = edgelets
@@ -461,9 +462,7 @@ def vis_model(image, model, show=True):
         xax = [locations[i, 0], vp[0]]
         yax = [locations[i, 1], vp[1]]
         plt.plot(xax, yax, 'b-.')
-
-    if show:
-        plt.show()
+    plt.savefig(f'./output/fig_{idx}.png')
 
 
 def rectify_image(image, clip_factor=6, algorithm='independent',
