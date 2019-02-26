@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 from numpy.linalg import LinAlgError
 
@@ -47,3 +48,7 @@ class Line(object):
             return Point(*((1 - t) * self.start_point + t * self.end_point).T)
         except LinAlgError:
             return None
+
+    def render(self, image):
+        cv2.line(image, (self.x1, self.y1), (self.x2, self.y2), (0, 0, 255), 2)
+        return

@@ -11,7 +11,7 @@ class Point(object):
         self._coord_x = int(round(self._x, 0))
         self._coord_y = int(round(self._y, 0))
 
-        self.threshold = 25
+        self.threshold = 15
         self.neighbours = []
         self.c_neighbours = 0
 
@@ -34,7 +34,7 @@ class Point(object):
         return self._coord_y
 
     def render(self, image):
-        return cv2.circle(image, (self.x, self.y), 5, (255, 0, 0), -1)
+        cv2.circle(image, (self.x, self.y), 3, (255, 0, 0), -1)
 
     @staticmethod
     def near(point1, point2):

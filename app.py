@@ -1,4 +1,5 @@
 import glob
+import time
 
 import cv2
 
@@ -19,11 +20,17 @@ for file in files:
     success, image = vidcap.read()
 
     count = 0
-
+    times = []
     while success:
+        start = time.time()
+
         canny = Canny(image)
 
         canny.process_frame()
+        stop = time.time()
+
+        times.append(stop - start)
+        print(stop - start)
 
         canny.render(image)
 
@@ -35,5 +42,6 @@ for file in files:
         count += 1
 
     make_video(video_files, f'./output_{o_count}.mp4')
+    print(sum(times) / len(times))
     o_count += 1
 done()

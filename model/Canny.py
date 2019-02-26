@@ -33,12 +33,19 @@ class Canny(object):
         lower = int(max(0, (1.0 - self.sigma) * v))
         upper = int(min(255, (1.0 + self.sigma) * v))
 
-        edges = cv2.Canny(gray, 75, 170, apertureSize=3)
+        # print(lower, upper)
+        # exit(1)
+
+        # edges = cv2.Canny(gray, 75, 170, apertureSize=3)
+        edges = cv2.Canny(gray, 50, 100, apertureSize=3)
 
         for line_data in cv2.HoughLines(edges, 1, np.pi / 180, 100, self.min_line_length, self.max_line_gap):
-            line = Line(*line_data.T)
+            try:
+                line = Line(*line_data.T)
 
-            if 1 - self.line_deviation < line.x_deviation or 1 - self.line_deviation < line.y_deviation:
+                if 1 - self.line_deviation < line.x_deviation or 1 - self.line_deviation < line.y_deviation:
+                    continue
+            except Exception:
                 continue
 
             for line_ in self.lines.get():
@@ -63,4 +70,5 @@ class Canny(object):
 
     def render(self, image):
         # self.points.render(image)
+        # self.lines.render(image)
         self.cluster_points.render(image)

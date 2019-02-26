@@ -20,4 +20,4 @@ class Cluster(object):
             point.render(image)
 
         if len(self.points) > 0:
-            cv2.circle(image, self.center, 5, (255, 255, 0), -1)
+            cv2.circle(image, self.center, 3, (255, 255, 0), -1)
