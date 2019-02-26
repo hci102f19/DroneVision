@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 
 from libs import line_intersection, clear_folder
+from model.Point import Point
+from model.Points import Points
 
 files = glob.glob('./output/*.jpg')
 
@@ -33,8 +35,6 @@ for file in files:
 
     count = 0
 
-    video_images = []
-
     # while success:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -47,7 +47,7 @@ for file in files:
 
     lines = cv2.HoughLines(edges, 1, np.pi / 180, 100, minLineLength, maxLineGap)
 
-    points = []
+    points = Points()
     k = []
 
     for line in lines:
@@ -73,14 +73,15 @@ for file in files:
                 try:
                     x, y = line_intersection(k_, direction)
                     if 0 < x < width and 0 < y < height:
-                        points.append([x, y])
-                        cv2.circle(blank_image, (x, y), 5, (255, 0, 0), -1)
+                        p = Point(x, y)
+
+                        points.add(p)
+                        p.render(blank_image)
+
                 except Exception as f:
                     pass
 
             k.append(direction)
-
-            cv2.line(blank_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
     cv2.imwrite(f'./{output}/{basename(file)}', blank_image)
 
