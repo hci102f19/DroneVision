@@ -7,3 +7,7 @@ class Points(object):
 
     def add(self, point: Point):
         self.points.append(point)
+
+    def render(self, image):
+        for point in self.points:
+            point.render(image)

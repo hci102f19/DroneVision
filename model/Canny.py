@@ -44,3 +44,6 @@ class Canny(object):
                     self.points.add(intersection_point)
 
             lines.append(line)
+
+    def render(self, image):
+        self.points.render(image)
