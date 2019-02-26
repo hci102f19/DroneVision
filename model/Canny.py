@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
 
+from model.Cluster import Cluster
 from model.Line import Line
+from model.Lines import Lines
 from model.Points import Points
 
 
@@ -19,6 +21,9 @@ class Canny(object):
         self.line_deviation = 0.15
 
         self.points = Points()
+        self.lines = Lines()
+
+        self.cluster_points = Cluster()
 
     def process_frame(self):
         gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
@@ -28,9 +33,7 @@ class Canny(object):
         lower = int(max(0, (1.0 - self.sigma) * v))
         upper = int(min(255, (1.0 + self.sigma) * v))
 
-        edges = cv2.Canny(gray, lower, upper, apertureSize=3)
-
-        lines = []
+        edges = cv2.Canny(gray, 75, 170, apertureSize=3)
 
         for line_data in cv2.HoughLines(edges, 1, np.pi / 180, 100, self.min_line_length, self.max_line_gap):
             line = Line(*line_data.T)
@@ -38,12 +41,26 @@ class Canny(object):
             if 1 - self.line_deviation < line.x_deviation or 1 - self.line_deviation < line.y_deviation:
                 continue
 
-            for line_ in lines:
+            for line_ in self.lines.get():
                 intersection_point = line.intersection_point(line_)
                 if intersection_point is not None:
                     self.points.add(intersection_point)
 
-            lines.append(line)
+            self.lines.add(line)
+
+        self.calculate_cluster()
+
+    def calculate_cluster(self):
+        for point in self.points.get():
+            point.count_neighbours(self.points.get())
+
+        nodes = sorted(self.points.get(), key=lambda x: x.count_neighbour, reverse=True)
+        if len(nodes) > 0:
+            max_node = nodes[0]
+
+            for point in list(set(max_node.export())):
+                self.cluster_points.add(point)
 
     def render(self, image):
-        self.points.render(image)
+        # self.points.render(image)
+        self.cluster_points.render(image)

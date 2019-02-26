@@ -11,3 +11,6 @@ class Points(object):
     def render(self, image):
         for point in self.points:
             point.render(image)
+
+    def get(self):
+        return self.points

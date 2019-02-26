@@ -2,6 +2,7 @@ import glob
 import os
 
 import cv2
+import pyttsx3
 
 
 def clear_folder(folder: str):
@@ -22,7 +23,8 @@ def make_video(images: list, file: str):
         image_path = image
         frame = cv2.imread(image_path)
 
-        out.write(frame)  # Write out frame to video
+        for _ in range(3):
+            out.write(frame)  # Write out frame to video
 
     # Release everything if job is finished
     out.release()
@@ -45,3 +47,9 @@ def line_intersection(line1, line2):
     x = det(d, xdiff) / div
     y = det(d, ydiff) / div
     return int(round(x, 0)), int(round(y, 0))
+
+
+def done():
+    engine = pyttsx3.init()
+    engine.say('DONE')
+    engine.runAndWait()
