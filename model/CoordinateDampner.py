@@ -19,12 +19,12 @@ class CoordinateDampner(object):
         if len(self.history) <= self.limit:
             return self.latest
 
-        hst = self.history[-(self.limit+1):]
+        hst = self.history[-(self.limit + 1):]
         hst.pop()
 
         k = [True in self.latest.max_deviation(p) for p in hst]
-        print(k)
-        if k == [True, True]:
+
+        if k == [True for _ in range(self.limit)]:
             x = mean([point.x for point in hst])
             y = mean([point.y for point in hst])
             return Point(x, y)
