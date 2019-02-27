@@ -4,6 +4,7 @@ import numpy as np
 from model.Cluster import Cluster
 from model.Line import Line
 from model.Lines import Lines
+from model.Point import Point
 from model.Points import Points
 
 
@@ -67,6 +68,14 @@ class Canny(object):
 
             for point in list(set(max_node.export())):
                 self.cluster_points.add(point)
+
+    def get_center(self):
+        x, y = self.cluster_points.center
+
+        if x is None or y is None:
+            return None
+
+        return Point(x, y)
 
     def render(self, image):
         # self.points.render(image)

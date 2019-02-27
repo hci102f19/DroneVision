@@ -1,3 +1,5 @@
+import math
+
 import cv2
 from numpy import mean
 
@@ -11,8 +13,15 @@ class Cluster(object):
 
     @property
     def center(self):
+        if len(self.points) == 0:
+            return None, None
+
         x = mean([point.x for point in self.points])
         y = mean([point.y for point in self.points])
+
+        if math.isnan(x) or math.isnan(y):
+            return None, None
+
         return int(round(x, 0)), int(round(y, 0))
 
     def render(self, image):

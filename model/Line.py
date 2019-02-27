@@ -20,6 +20,7 @@ class Line(object):
 
     @staticmethod
     def abs_list(lst):
+        # TODO: Might not work as intented
         return [abs(e) for e in lst]
 
     @property

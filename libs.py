@@ -23,8 +23,8 @@ def make_video(images: list, file: str):
         image_path = image
         frame = cv2.imread(image_path)
 
-        for _ in range(3):
-            out.write(frame)  # Write out frame to video
+        # for _ in range(3):
+        out.write(frame)  # Write out frame to video
 
     # Release everything if job is finished
     out.release()

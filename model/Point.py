@@ -15,11 +15,18 @@ class Point(object):
         self.neighbours = []
         self.c_neighbours = 0
 
+        self.deviation = 0.9
+
         self.exported = False
 
     def add_neighbour(self, neighbour):
         self.neighbours.append(neighbour)
         self.c_neighbours += 1
+
+    def is_valid(self):
+        if self.x is None or self.y is None:
+            return False
+        return True
 
     @property
     def count_neighbour(self):
@@ -59,3 +66,14 @@ class Point(object):
                 t.extend(n.export())
 
         return t
+
+    def max_deviation(self, point):
+        x1, y1 = self.x, point.y
+        x2, y2 = point.x, point.y
+
+        if x1 > 0 and x2 > 0 and y1 > 0 and y2 > 0:
+            x_div = min([x1, x2]) / max([x1, x2])
+            y_div = min([y1, y2]) / max([y1, y2])
+
+            return x_div < self.deviation, y_div < self.deviation
+        return True, True
