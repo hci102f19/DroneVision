@@ -1,5 +1,5 @@
 import threading
-from time import time
+from time import time, sleep
 
 import cv2
 
