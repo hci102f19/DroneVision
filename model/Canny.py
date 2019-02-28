@@ -12,7 +12,7 @@ class Canny(object):
     def __init__(self, image):
         self.image = image
 
-        self.height, self.width, _ = image.shape
+        # self.height, self.width, _ = image.shape
 
         self.sigma = 0.33
 

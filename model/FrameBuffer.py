@@ -5,17 +5,17 @@ import cv2
 
 
 class FrameBuffer(threading.Thread):
-    def __init__(self):
+    def __init__(self, stream, x=640, y=360):
         super().__init__()
-        self.stream = cv2.VideoCapture('./source/destination_all.mp4')
+        self.stream = stream
 
         self.fps = self.stream.get(cv2.CAP_PROP_FPS)
-        self.frames = self.stream.get(cv2.CAP_PROP_FRAME_COUNT)
 
         self._current_frame = None
         self._running = False
 
-        self.size = (640, 360)
+        # self.size = (640, 360)
+        self.size = (x, y)
 
         self.overflow = 0
         self.sleep_timer = 1 / self.fps
