@@ -33,21 +33,17 @@ class FrameBuffer(threading.Thread):
         self.sleep_timer = 1 / self.fps
 
     def sleep(self, exec_time):
-        exec_time = exec_time + self.overflow
+        exec_time = exec_time + self.overflow + 0.002  # Magic 0.002 overflow number, for dat magic match
 
         if exec_time >= self.sleep_timer:
-            print("OVERFLOW!")
             self.overflow = exec_time - self.sleep_timer
-            return
+        else:
+            self.overflow = 0
 
-        self.overflow = 0
-        # print(self.sleep_timer - exec_time)
-        sleep(self.sleep_timer - exec_time)
+            sleep(self.sleep_timer - exec_time)
 
     def run(self):
         success, image = self.stream.read()
-
-        kage = time()
 
         while success:
             start = time()
@@ -58,13 +54,6 @@ class FrameBuffer(threading.Thread):
             self.sleep(time() - start)
 
         self._current_frame = None
-
-        run_time = (time() - kage)
-        should_time = self.frames / self.fps
-
-        print(run_time)
-        print(should_time)
-        print((run_time - should_time) / self.frames)
 
         done()
 
