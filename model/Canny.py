@@ -64,8 +64,10 @@ class Canny(object):
             else:
                 points = [Point(*point.xy) for point in intersections]
 
-            # for point in points:
-            #     point.validate_neighborhood(points)
+            for point in points:
+                if not point.is_checked():
+                    pass
+                    # point.validate_neighborhood(points)
 
             return points
         except TypeError as e:

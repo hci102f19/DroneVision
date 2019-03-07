@@ -17,7 +17,7 @@ canny = Canny()
 # out = cv2.VideoWriter('./test.mp4', fourcc, 30.0, (640, 360))
 
 while fb.running():
-    frame = fb.pop()
+    frame = fb.get()
     if frame is not None:
         start = time()
         points = canny.process_frame(frame)
@@ -29,8 +29,8 @@ while fb.running():
         show(frame, fps=True, fps_target=10, wait=1)
         end = time()
 
-        continue
-        fps = 1 / 10
+        # continue
+        fps = 1 / 30
 
         if end - start < fps:
             sleep(fps - (end - start))
