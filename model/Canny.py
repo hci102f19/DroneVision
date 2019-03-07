@@ -1,3 +1,5 @@
+from time import time
+
 import cv2
 import numpy as np
 from shapely.geometry import GeometryCollection, LineString
@@ -20,7 +22,7 @@ class Canny(object):
 
     def calculate_theta(self, lines):
         if self.last_frame_count is not None:
-            modifier = self.last_frame_count / lines
+            modifier = (self.last_frame_count / lines) * 2
 
             if modifier <= 0:
                 modifier = 1
@@ -31,10 +33,10 @@ class Canny(object):
 
         if lines < 10 and self.theta > self.theta_modifier:
             self.theta -= int(round(self.theta_modifier * modifier, 0))
-            print(f'Not enough data, decreasing l_theta to {self.theta}')
+            # print(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > 50:
             self.theta += int(round(self.theta_modifier * modifier, 0))
-            print(f'Too much data, increasing l_theta to {self.theta}')
+            # print(f'Too much data, increasing l_theta to {self.theta}')
 
         return self.line_max < lines
 
@@ -45,7 +47,7 @@ class Canny(object):
         lines = cv2.HoughLines(edges, 2, np.pi / 180, self.theta)
         if lines is not None:
             if self.calculate_theta(len(lines)):
-                print(f"WAY TOO MANY LINES: {len(lines)}")
+                # print(f"WAY TOO MANY LINES: {len(lines)}")
                 return []
 
             for line_data in lines:
@@ -56,7 +58,11 @@ class Canny(object):
                 except (IsNan, InvalidLine):
                     pass
 
-        gc = GeometryCollection(lines_)
+        return self.clustering(lines_)
+
+    @staticmethod
+    def clustering(lines):
+        gc = GeometryCollection(lines)
         try:
             intersections = gc.intersection(gc)
             if isinstance(intersections, LineString):
@@ -66,8 +72,7 @@ class Canny(object):
 
             for point in points:
                 if not point.is_checked():
-                    pass
-                    # point.validate_neighborhood(points)
+                    point.validate_neighborhood(points)
 
             return points
         except TypeError as e:

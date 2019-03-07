@@ -1,14 +1,16 @@
-from time import time
-
 import cv2
 from shapely.geometry import Point as BasePoint
+
+from model.Cluster import Cluster
 
 
 class Point(BasePoint):
     def __init__(self, x, y):
         super().__init__([x[0], y[0]])
+        self.x_point = float(x[0])
+        self.y_point = float(y[0])
 
-        self.threshold = 5
+        self.threshold = 10
 
         self.valid = True
         self.checked = False
@@ -22,24 +24,26 @@ class Point(BasePoint):
         self.cluster = cluster
         self.cluster.add(self)
 
-    def validate_neighborhood(self, points):
-        start = time()
-        neighborhood = [point for point in points if self.distance(point) < self.threshold]
-        print(round(time() - start, 2))
-        return
+    def point_validator(self, point):
+        return abs(self.x_point - point.x_point) < self.threshold and abs(self.y_point - point.y_point) < self.threshold
 
-        if neighborhood:
-            # neighborhoods = list(set([point.cluster for point in neighborhood if point.cluster is not None]))
-            #
-            # if neighborhoods:
-            #     cluster = neighborhoods[0]
-            #     for cluster_ in neighborhoods[1:]:
-            #         cluster.conquer(cluster_.points)
-            # else:
-            #     cluster = Cluster()
-            #
-            # self.set_cluster(cluster)
-            self.valid = True
+    def validate_neighborhood(self, points):
+        neighborhood = [point for point in points if self.point_validator(point)]
+
+        if len(neighborhood) > 0:
+            neighborhoods = list(set([point.cluster for point in neighborhood if point.cluster is not None]))
+
+            if len(neighborhoods) > 0:
+                cluster = neighborhoods[0]
+                for cluster_ in neighborhoods[1:]:
+                    cluster.conquer(cluster_.points)
+            else:
+                cluster = Cluster()
+
+            for n in neighborhood:
+                n.set_cluster(cluster)
+
+            self.set_cluster(cluster)
         else:
             self.valid = False
 
@@ -53,4 +57,4 @@ class Point(BasePoint):
                 if self.cluster is not None:
                     if len(self.cluster.points) > 0:
                         r, g, b = self.cluster.color
-                        cv2.circle(image, (int(self.x), int(self.y)), 1, (int(b), int(g), int(r)), -1)
+                        cv2.circle(image, (int(self.x), int(self.y)), 3, (int(b), int(g), int(r)), -1)

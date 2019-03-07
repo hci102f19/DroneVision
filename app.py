@@ -30,7 +30,7 @@ while fb.running():
         end = time()
 
         # continue
-        fps = 1 / 30
+        fps = 1 / 10
 
         if end - start < fps:
             sleep(fps - (end - start))
