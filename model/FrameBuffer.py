@@ -58,6 +58,10 @@ class FrameBuffer(threading.Thread):
     def get(self):
         return self._current_frame
 
+    def pop(self):
+        frame, self._current_frame = self._current_frame, None
+        return frame
+
     def running(self):
         return self._running
 
