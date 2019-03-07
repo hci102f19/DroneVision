@@ -1,79 +1,49 @@
-import math
-
 import cv2
+from shapely.geometry import Point as BasePoint
+
+from model.Cluster import Cluster
 
 
-class Point(object):
+class Point(BasePoint):
     def __init__(self, x, y):
-        self._x = x
-        self._y = y
+        super().__init__([x[0], y[0]])
 
-        self._coord_x = int(round(self._x, 0))
-        self._coord_y = int(round(self._y, 0))
+        self.threshold = 3
 
-        self.threshold = 15
-        self.neighbours = []
-        self.c_neighbours = 0
+        self.cluster = None
 
-        self.deviation = 0.9
+    def set_cluster(self, cluster):
+        self.cluster = cluster
+        self.cluster.add(self)
 
-        self.exported = False
+    def validate_neighborhood(self, points):
+        neighborhood = []
 
-    def add_neighbour(self, neighbour):
-        self.neighbours.append(neighbour)
-        self.c_neighbours += 1
+        for point in points:
+            if point is self:
+                continue
 
-    def is_valid(self):
-        if self.x is None or self.y is None:
-            return False
-        return True
+            if self.distance(point) < self.threshold:
+                neighborhood.append(point)
 
-    @property
-    def count_neighbour(self):
-        return self.c_neighbours
+        if len(neighborhood) > 0:
+            neighborhoods = list(set([point.cluster for point in neighborhood if point.cluster is not None]))
 
-    @property
-    def x(self):
-        return self._coord_x
+            if neighborhoods:
+                cluster = neighborhoods[0]
+                for cluster_ in neighborhoods[1:]:
+                    cluster.conquer(cluster_.points)
+            else:
+                cluster = Cluster()
 
-    @property
-    def y(self):
-        return self._coord_y
+            self.set_cluster(cluster)
 
     def render(self, image):
-        cv2.circle(image, (self.x, self.y), 3, (255, 0, 0), -1)
+        cv2.circle(image, (int(self.x), int(self.y)), 1, (0, 0, 0), -1)
+        cv2.circle(image, (int(self.x), int(self.y)), self.threshold, (255, 255, 255), 1)
 
-    @staticmethod
-    def near(point1, point2):
-        if point1 > point2:
-            return point1 - point2
-        return point2 - point1
-
-    def count_neighbours(self, points):
-        for point in points:
-            if self.near(point.x, self.x) <= self.threshold and self.near(point.y, self.y) <= self.threshold:
-                if self.threshold >= math.hypot(point.x - self.x, point.y - self.y):
-                    self.add_neighbour(point)
-
-    def export(self):
-        # TODO: Rewrite, more readable
-        self.exported = True
-
-        t = [self]
-
-        for n in self.neighbours:
-            if not n.exported:
-                t.extend(n.export())
-
-        return t
-
-    def max_deviation(self, point):
-        x1, y1 = self.x, point.y
-        x2, y2 = point.x, point.y
-
-        if x1 > 0 and x2 > 0 and y1 > 0 and y2 > 0:
-            x_div = min([x1, x2]) / max([x1, x2])
-            y_div = min([y1, y2]) / max([y1, y2])
-
-            return x_div < self.deviation, y_div < self.deviation
-        return True, True
+        return
+        if self.cluster is not None:
+            if len(self.cluster.points) > 0:
+                r, g, b = self.cluster.color
+                cv2.circle(image, (int(self.x), int(self.y)), 3, (int(b), int(g), int(r)), -1)

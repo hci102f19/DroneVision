@@ -7,6 +7,10 @@ import cv2
 class FrameBuffer(threading.Thread):
     def __init__(self, stream, x=640, y=360):
         super().__init__()
+
+        if not isinstance(stream, cv2.VideoCapture):
+            raise Exception("Not video stream")
+
         self.stream = stream
 
         self.fps = self.stream.get(cv2.CAP_PROP_FPS)
@@ -14,7 +18,6 @@ class FrameBuffer(threading.Thread):
         self._current_frame = None
         self._running = False
 
-        # self.size = (640, 360)
         self.size = (x, y)
 
         self.overflow = 0
@@ -35,10 +38,16 @@ class FrameBuffer(threading.Thread):
         self._running = True
         success, image = self.stream.read()
 
-        while success:
+        while success and self._running:
             start = time()
 
-            self._current_frame = cv2.resize(image, self.size)
+            frame = image
+            blur = 3
+
+            frame = cv2.GaussianBlur(frame, (blur, blur), 0)
+            frame = cv2.resize(frame, self.size)
+
+            self._current_frame = frame
             success, image = self.stream.read()
 
             self.sleep(time() - start)
@@ -51,3 +60,6 @@ class FrameBuffer(threading.Thread):
 
     def running(self):
         return self._running
+
+    def kill(self):
+        self._running = False
