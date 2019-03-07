@@ -13,8 +13,10 @@ fb.start()
 
 canny = Canny()
 
-# fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
-# out = cv2.VideoWriter('./test.mp4', fourcc, 30.0, (640, 360))
+fps_real = 10
+fps = 1 / fps_real
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
+out = cv2.VideoWriter('./test.mp4', fourcc, round(fps_real, 0), (640, 360))
 
 while fb.running():
     frame = fb.get()
@@ -25,13 +27,12 @@ while fb.running():
         for point in points:
             point.render(frame)
 
-        # out.write(frame)
-        show(frame, fps=True, fps_target=10, wait=1)
+        out.write(frame)
+        #show(frame, fps=True, fps_target=10, wait=1)
         end = time()
 
         # continue
-        fps = 1 / 10
 
         if end - start < fps:
             sleep(fps - (end - start))
-# out.release()
+out.release()

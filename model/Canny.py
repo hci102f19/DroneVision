@@ -1,5 +1,3 @@
-from time import time
-
 import cv2
 import numpy as np
 from shapely.geometry import GeometryCollection, LineString
@@ -63,6 +61,7 @@ class Canny(object):
     @staticmethod
     def clustering(lines):
         gc = GeometryCollection(lines)
+        clusters = []
         try:
             intersections = gc.intersection(gc)
             if isinstance(intersections, LineString):
@@ -72,9 +71,16 @@ class Canny(object):
 
             for point in points:
                 if not point.is_checked():
-                    point.validate_neighborhood(points)
+                    cluster = point.validate_neighborhood(points)
+                    if cluster is not None:
+                        clusters.append(cluster)
 
-            return points
+            if len(clusters) > 0:
+                c = [c for c in clusters if not c.is_dead()]
+                c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+                cgc = GeometryCollection(c[0].points)
+                return [Point(*cgc.centroid.xy)]
+            return []
         except TypeError as e:
             print(str(e))
             return []

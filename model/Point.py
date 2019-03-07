@@ -46,15 +46,17 @@ class Point(BasePoint):
             self.set_cluster(cluster)
         else:
             self.valid = False
+            cluster = None
+        return cluster
 
     def render(self, image):
-        render = 2
+        render = 1
         if self.valid:
             if render == 1:
-                cv2.circle(image, (int(self.x), int(self.y)), 1, (0, 0, 0), -1)
-                cv2.circle(image, (int(self.x), int(self.y)), self.threshold, (255, 255, 255), 1)
+                cv2.circle(image, (int(self.x), int(self.y)), 5, (0, 0, 0), -1)
+                #cv2.circle(image, (int(self.x), int(self.y)), self.threshold, (255, 255, 255), 1)
             else:
                 if self.cluster is not None:
-                    if len(self.cluster.points) > 0:
+                    if len(self.cluster.points) > 10:
                         r, g, b = self.cluster.color
                         cv2.circle(image, (int(self.x), int(self.y)), 3, (int(b), int(g), int(r)), -1)
