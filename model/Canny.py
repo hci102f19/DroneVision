@@ -82,8 +82,12 @@ class Canny(object):
 
                 cgc = GeometryCollection(c[0].points)
 
-                return [Point(*cgc.centroid.xy)]
-            return []
+                kz = []
+                for l in c[:3]:
+                    kz.extend(l.points)
+
+                return kz, Point(*cgc.centroid.xy)
+            return [], None
         except TypeError as e:
             print(str(e))
-            return []
+            return [], None

@@ -1,9 +1,9 @@
 from time import time
 
 import cv2
-from shapely.geometry import box
 
 from libs import show
+from model.Box import Box
 from model.Canny import Canny
 
 stream = cv2.VideoCapture('./source/video.v2.mp4')
@@ -27,7 +27,7 @@ y1 = int(height * (((1 - h_center) / 2) - h_offset))
 x2 = int(width * (1 - ((1 - w_center) / 2)))
 y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
 
-s = box(width / 3, 100, width / 1.5, 200)
+hitbox = Box(x1, y1, x2, y2)
 
 while success:
     frame = image
@@ -36,20 +36,21 @@ while success:
 
     if frame is not None:
         start = time()
-        points = canny.process_frame(frame)
+        points, center = canny.process_frame(frame)
 
         if points:
-            print(points[0])
+            for p in points:
+                p.render(frame)
 
-        # for point in points:
-        #     point.render(frame, main)
+        if center is not None:
+            if hitbox.intersects(center):
+                center.render(frame)
 
-        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 3)
         # out.write(frame)
+        hitbox.render(frame)
         show(frame, fps=True, fps_target=10, wait=1)
 
         # cv2.imwrite(f'./output/{count}.png', frame)
-
 
         end = time()
 
