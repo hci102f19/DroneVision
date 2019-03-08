@@ -72,7 +72,10 @@ def show(image, **kwargs):
         diff = round(now - fps_timer, 2)
         fps_timer = now
 
-        fps_nbr = round(1 / diff, 1)
+        if diff > 0:
+            fps_nbr = round(1 / diff, 1)
+        else:
+            fps_nbr = 'inf.'
         fps_ = str(fps_nbr)
 
         (text_width, text_height) = cv2.getTextSize(fps_, font, fontScale=font_scale, thickness=1)[0]
@@ -84,7 +87,7 @@ def show(image, **kwargs):
         cv2.rectangle(image, box_coords[0], box_coords[1], (255, 255, 255), cv2.FILLED)
 
         if kwargs.get('fps_target', None) is not None:
-            if kwargs.get('fps_target', 0) < fps_nbr:
+            if fps_nbr == 'inf' or kwargs.get('fps_target', 0) < fps_nbr:
                 cv2.putText(image, fps_, (text_offset_x, text_offset_y), font, fontScale=1.5, color=(0, 255, 0),
                             thickness=1)
             else:
