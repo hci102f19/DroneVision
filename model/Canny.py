@@ -1,3 +1,5 @@
+from time import time
+
 import cv2
 import numpy as np
 from shapely.geometry import GeometryCollection, LineString
@@ -15,6 +17,7 @@ class Canny(object):
         self.theta_modifier = 5
 
         self.last_frame_count = None
+        self.last_time_count = time()
 
         self.line_max = 100
 
@@ -27,14 +30,21 @@ class Canny(object):
         else:
             modifier = 1
 
-        self.last_frame_count = lines
+        timestamp = time()
 
-        if lines < 10 and self.theta > self.theta_modifier:
+        if timestamp - self.last_time_count > 1 / 10:
+            # TODO: Time check, if too long, increase l_theta
+            print(f'Too slow, increasing l_theta to {self.theta}')
+            self.theta += int(self.theta_modifier * 0.5)
+        elif lines < 10 and self.theta > self.theta_modifier:
             self.theta -= int(round(self.theta_modifier * modifier, 0))
-            # print(f'Not enough data, decreasing l_theta to {self.theta}')
+            print(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > 50:
-            # print(f'Too much data, increasing l_theta to {self.theta}')
+            print(f'Too much data, increasing l_theta to {self.theta}')
             self.theta += int(round(self.theta_modifier * modifier, 0))
+
+        self.last_frame_count = lines
+        self.last_time_count = timestamp
 
         if self.line_max < lines:
             raise TooManyLines()

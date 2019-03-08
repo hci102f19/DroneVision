@@ -38,19 +38,18 @@ while success:
         start = time()
         points, center = canny.process_frame(frame)
 
+        hitbox.render(frame)
+
         if points:
             for p in points:
                 p.render(frame)
 
         if center is not None:
-            if hitbox.intersects(center):
-                center.render(frame)
+            center.render(frame)
+            if not hitbox.intersects(center):
+                cv2.imwrite(f'./output/{count}.png', frame)
 
-        # out.write(frame)
-        hitbox.render(frame)
         show(frame, fps=True, fps_target=10, wait=1)
-
-        # cv2.imwrite(f'./output/{count}.png', frame)
 
         end = time()
 
@@ -58,3 +57,4 @@ while success:
         #     sleep(fps - (end - start))
     count += 1
     success, image = stream.read()
+print(count)
