@@ -25,23 +25,27 @@ class Point(BasePoint):
         self.cluster.add(self)
 
     def point_validator(self, point):
-        return abs(self.x_point - point.x_point) < self.threshold and abs(self.y_point - point.y_point) < self.threshold
+        return (
+                abs(self.x_point - point.x_point) < self.threshold and
+                abs(self.y_point - point.y_point) < self.threshold and
+                self.distance(point) < self.threshold
+        )
 
     def validate_neighborhood(self, points):
         neighborhood = [point for point in points if self.point_validator(point)]
 
-        if len(neighborhood) > 0:
+        if neighborhood:
             neighborhoods = list(set([point.cluster for point in neighborhood if point.cluster is not None]))
 
-            if len(neighborhoods) > 0:
+            if neighborhoods:
                 cluster = neighborhoods[0]
                 for cluster_ in neighborhoods[1:]:
                     cluster.conquer(cluster_.points)
             else:
                 cluster = Cluster()
 
-            for n in neighborhood:
-                n.set_cluster(cluster)
+            for neighbor in neighborhood:
+                neighbor.set_cluster(cluster)
 
             self.set_cluster(cluster)
         else:
@@ -54,9 +58,9 @@ class Point(BasePoint):
         if self.valid:
             if render == 1:
                 cv2.circle(image, (int(self.x), int(self.y)), 5, (0, 0, 0), -1)
-                #cv2.circle(image, (int(self.x), int(self.y)), self.threshold, (255, 255, 255), 1)
+                # cv2.circle(image, (int(self.x), int(self.y)), self.threshold, (255, 255, 255), 1)
             else:
                 if self.cluster is not None:
-                    if len(self.cluster.points) > 10:
-                        r, g, b = self.cluster.color
-                        cv2.circle(image, (int(self.x), int(self.y)), 3, (int(b), int(g), int(r)), -1)
+                    print("AS")
+                    r, g, b = self.cluster.color
+                    cv2.circle(image, (int(self.x), int(self.y)), 3, (int(b), int(g), int(r)), -1)

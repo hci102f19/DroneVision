@@ -4,3 +4,11 @@ class IsNan(Exception):
 
 class InvalidLine(Exception):
     pass
+
+
+class TooManyLines(Exception):
+    pass
+
+
+class TooManyPoints(Exception):
+    pass

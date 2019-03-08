@@ -4,7 +4,7 @@ from shapely.geometry import GeometryCollection, LineString
 
 from model.Line import Line
 from model.Point import Point
-from model.exceptions import IsNan, InvalidLine
+from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
 
 
 class Canny(object):
@@ -33,10 +33,11 @@ class Canny(object):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
             # print(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > 50:
-            self.theta += int(round(self.theta_modifier * modifier, 0))
             # print(f'Too much data, increasing l_theta to {self.theta}')
+            self.theta += int(round(self.theta_modifier * modifier, 0))
 
-        return self.line_max < lines
+        if self.line_max < lines:
+            raise TooManyLines()
 
     def process_frame(self, frame):
         lines_ = []
@@ -44,18 +45,18 @@ class Canny(object):
 
         lines = cv2.HoughLines(edges, 2, np.pi / 180, self.theta)
         if lines is not None:
-            if self.calculate_theta(len(lines)):
-                # print(f"WAY TOO MANY LINES: {len(lines)}")
-                return []
+            try:
+                self.calculate_theta(len(lines))
 
-            for line_data in lines:
-                try:
-                    line = Line(*line_data.T)
-                    lines_.append(line)
+                for line_data in lines:
+                    try:
+                        line = Line(*line_data.T)
+                        lines_.append(line)
 
-                except (IsNan, InvalidLine):
-                    pass
-
+                    except (IsNan, InvalidLine):
+                        pass
+            except (TooManyLines, TooManyPoints):
+                pass
         return self.clustering(lines_)
 
     @staticmethod
@@ -75,10 +76,12 @@ class Canny(object):
                     if cluster is not None:
                         clusters.append(cluster)
 
-            if len(clusters) > 0:
+            if clusters:
                 c = [c for c in clusters if not c.is_dead()]
                 c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+
                 cgc = GeometryCollection(c[0].points)
+
                 return [Point(*cgc.centroid.xy)]
             return []
         except TypeError as e:

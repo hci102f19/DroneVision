@@ -19,6 +19,7 @@ class FrameBuffer(threading.Thread):
         self._running = False
 
         self.size = (x, y)
+        self.blur = 3
 
         self.overflow = 0
         self.sleep_timer = 1 / self.fps
@@ -42,10 +43,9 @@ class FrameBuffer(threading.Thread):
             start = time()
 
             frame = image
-            blur = 3
 
-            frame = cv2.GaussianBlur(frame, (blur, blur), 0)
             frame = cv2.resize(frame, self.size)
+            frame = cv2.GaussianBlur(frame, (self.blur, self.blur), 0)
 
             self._current_frame = frame
             success, image = self.stream.read()
