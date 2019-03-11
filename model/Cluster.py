@@ -8,8 +8,6 @@ class Cluster(object):
         self.csize = 0
         self._color = list(np.random.choice(range(256), size=3))
 
-        self.dead = False
-
         self.border = 2
 
     def add(self, point):
@@ -22,14 +20,6 @@ class Cluster(object):
 
     def cluster_size(self):
         return self.csize
-
-    def is_dead(self):
-        return self.dead
-
-    def conquer(self, cluser):
-        for point in cluser:
-            point.set_cluster(self)
-        self.dead = True
 
     def min(self, lst):
         return int(round(min(lst) - (self.border / 2), 0))

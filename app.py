@@ -32,7 +32,7 @@ y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
 hitbox = Box(x1, y1, x2, y2)
 
 while fb.running():
-    frame = fb.pop()
+    frame = fb.get()
     if frame is not None:
         frame = cv2.resize(frame, (width, height))
         frame = cv2.GaussianBlur(frame, (3, 3), 0)

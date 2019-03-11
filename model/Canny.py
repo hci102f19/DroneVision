@@ -38,7 +38,7 @@ class Canny(object):
             # TODO: Time check, if too long, increase l_theta
             print(f'Too slow, increasing l_theta to {self.theta}')
             self.theta += int(self.theta_modifier * 0.5)
-        elif lines < 10 and self.theta > self.theta_modifier:
+        elif lines < 10 and self.theta > int(round(self.theta_modifier * modifier, 0)):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
             print(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > 50:
@@ -97,10 +97,8 @@ class Canny(object):
 
                     points[idx].set_cluster(clusters[kl])
 
-                clusters = [c for _, c in clusters.items()]
-
                 if clusters:
-                    c = [c for c in clusters if not c.is_dead()]
+                    c = [c for _, c in clusters.items()]
                     c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
 
                     cgc = GeometryCollection(c[0].points)
