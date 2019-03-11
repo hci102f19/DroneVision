@@ -102,4 +102,4 @@ def show(image, **kwargs):
             write_text(image, fps_, 1, 2, color=(0, 0, 0))
 
     cv2.imshow('frame', image)
-    cv2.waitKey(kwargs.get('wait', 1))
+    return cv2.waitKey(kwargs.get('wait', 1))
