@@ -3,7 +3,9 @@ from time import time
 import cv2
 import numpy as np
 from shapely.geometry import GeometryCollection, LineString
+from sklearn.cluster import DBSCAN
 
+from model.Cluster import Cluster
 from model.Line import Line
 from model.Point import Point
 from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
@@ -67,12 +69,13 @@ class Canny(object):
                         pass
             except (TooManyLines, TooManyPoints):
                 pass
+
         return self.clustering(lines_)
 
     @staticmethod
     def clustering(lines):
         gc = GeometryCollection(lines)
-        clusters = []
+
         try:
             intersections = gc.intersection(gc)
             if isinstance(intersections, LineString):
@@ -80,23 +83,29 @@ class Canny(object):
             else:
                 points = [Point(*point.xy) for point in intersections]
 
-            for point in points:
-                if not point.is_checked():
-                    cluster = point.validate_neighborhood(points)
-                    if cluster is not None:
-                        clusters.append(cluster)
+            if points:
+                points_ = [(p.x_point, p.y_point) for p in points]
+                clustering = DBSCAN(eps=20, min_samples=5).fit(points_)
 
-            if clusters:
-                c = [c for c in clusters if not c.is_dead()]
-                c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+                clusters = {}
 
-                cgc = GeometryCollection(c[0].points)
+                for idx, kl in enumerate(clustering.labels_):
+                    if kl == -1:
+                        continue
+                    if kl not in clusters:
+                        clusters[kl] = Cluster()
 
-                kz = []
-                for l in c[:3]:
-                    kz.extend(l.points)
+                    points[idx].set_cluster(clusters[kl])
 
-                return kz, Point(*cgc.centroid.xy)
+                clusters = [c for _, c in clusters.items()]
+
+                if clusters:
+                    c = [c for c in clusters if not c.is_dead()]
+                    c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+
+                    cgc = GeometryCollection(c[0].points)
+
+                    return c, Point(*cgc.centroid.xy)
             return [], None
         except TypeError as e:
             print(str(e))

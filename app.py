@@ -5,9 +5,11 @@ import cv2
 from libs import show
 from model.Box import Box
 from model.Canny import Canny
+from model.FrameBuffer import FrameBuffer
 
 stream = cv2.VideoCapture('./source/video.v2.mp4')
-success, image = stream.read()
+fb = FrameBuffer(stream)
+fb.start()
 
 canny = Canny()
 
@@ -16,7 +18,7 @@ fps = 1 / fps_real
 
 count = 0
 
-width, height = 640, 360
+width, height = fb.size
 
 w_center = 0.20
 h_center = 0.20
@@ -29,32 +31,25 @@ y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
 
 hitbox = Box(x1, y1, x2, y2)
 
-while success:
-    frame = image
-    frame = cv2.resize(frame, (width, height))
-    frame = cv2.GaussianBlur(frame, (3, 3), 0)
-
+while fb.running():
+    frame = fb.pop()
     if frame is not None:
-        start = time()
-        points, center = canny.process_frame(frame)
+        frame = cv2.resize(frame, (width, height))
+        frame = cv2.GaussianBlur(frame, (3, 3), 0)
 
-        hitbox.render(frame)
+        if frame is not None:
+            start = time()
+            points, center = canny.process_frame(frame)
 
-        if points:
-            for p in points:
-                p.render(frame)
+            hitbox.render(frame)
 
-        if center is not None:
-            center.render(frame)
-            if not hitbox.intersects(center):
-                cv2.imwrite(f'./output/{count}.png', frame)
+            if points:
+                for p in points:
+                    p.render(frame)
 
-        show(frame, fps=True, fps_target=10, wait=1)
+            if center is not None:
+                center.render(frame)
 
-        end = time()
+            show(frame, fps=True, fps_target=10, wait=1)
 
-        # if end - start < fps:
-        #     sleep(fps - (end - start))
-    count += 1
-    success, image = stream.read()
-print(count)
+            end = time()
