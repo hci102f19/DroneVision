@@ -1,4 +1,7 @@
+from scipy.interpolate import interp1d
+
 from model.Box import Box
+from model.Point import Point
 
 
 class CenterBox(object):
@@ -10,12 +13,36 @@ class CenterBox(object):
         self.h_center = h_center
         self.h_offset = h_offset
 
-        self.x1 = int(width * ((1 - w_center) / 2))
-        self.y1 = int(height * (((1 - h_center) / 2) - h_offset))
-        self.x2 = int(width * (1 - ((1 - w_center) / 2)))
-        self.y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
+        self.x1 = width * ((1 - w_center) / 2)
+        self.y1 = height * (((1 - h_center) / 2) - h_offset)
+        self.x2 = width * (1 - ((1 - w_center) / 2))
+        self.y2 = height * ((1 - ((1 - h_center) / 2)) - h_offset)
 
         self.box = Box(self.x1, self.y1, self.x2, self.y2)
 
-    def render(self, image):
-        self.box.render(image)
+        self.center = Point.points2point(
+            self.x1 + ((self.x2 - self.x1) / 2),
+            self.y1 + ((self.y2 - self.y1) / 2)
+        )
+
+    def intersects(self, other):
+        return self.box.intersects(other)
+
+    def render(self, image, point=None):
+        self.box.render(image, point)
+        self.center.render(image)
+
+    def flight(self, point):
+        p_x, p_y = point.x_point, point.y_point
+        c_x, c_y = self.center.x_point, self.center.y_point
+
+        x_calc = interp1d([-self.center.x_point, self.center.x_point], [-100, 100])
+        y_calc = interp1d([-self.center.y_point, self.center.y_point], [-100, 100])
+
+        x_force = p_x - c_x
+        y_force = p_y - c_y
+
+        x_val = x_calc(x_force) - x_force if abs(x_force) > self.center.x_point * self.w_center else 0
+        y_val = y_calc(y_force) - y_force if abs(y_force) > self.center.y_point * self.h_center else 0
+
+        return x_val, y_val

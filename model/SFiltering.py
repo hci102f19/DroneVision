@@ -1,5 +1,3 @@
-import json
-
 import numpy as np
 
 from model.Point import Point
@@ -36,7 +34,8 @@ class SFiltering(object):
             self.points = self.points[-(self.history_size - 1):] + [point]
             self.rejected_list.clear()
         else:
-            self.rejected_list.append(point)
+            # self.rejected_list.append(point)
+            self.rejected_list = self.rejected_list[-(self.history_size - 1):] + [point]
             if len(self.rejected_list) > int(self.history_size / 2) and not self.deviate(self.rejected_list, point):
                 print("SETTING NEW POINTS LIST!")
                 self.points.clear()
