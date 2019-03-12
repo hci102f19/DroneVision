@@ -30,7 +30,6 @@ class CenterBox(object):
 
     def render(self, image, point=None):
         self.box.render(image, point)
-        self.center.render(image)
 
     def flight(self, point):
         p_x, p_y = point.x_point, point.y_point
@@ -42,7 +41,11 @@ class CenterBox(object):
         x_force = p_x - c_x
         y_force = p_y - c_y
 
-        x_val = x_calc(x_force) - x_force if abs(x_force) > self.center.x_point * self.w_center else 0
-        y_val = y_calc(y_force) - y_force if abs(y_force) > self.center.y_point * self.h_center else 0
+        try:
+            x_val = x_calc(x_force) - x_force if abs(x_force) > self.center.x_point * self.w_center else 0
+            y_val = y_calc(y_force) - y_force if abs(y_force) > self.center.y_point * self.h_center else 0
 
-        return x_val, y_val
+            return round(x_val, 2), round(y_val, 2)
+        except ValueError:
+            print("FAK!")
+            return 0, 0

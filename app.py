@@ -30,6 +30,8 @@ while frame_buffer.running():
 
                 # frame_buffer.kill()
 
+
+
                 print(f'x: {x}, y: {y}')
 
                 # x, y = center_box.flight(damped_center)
