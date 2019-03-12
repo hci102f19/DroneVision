@@ -45,9 +45,9 @@ class SFiltering(object):
                 self.rejected_list.clear()
 
     def deviate(self, lst, point):
+        x2, y2 = self.point2percent(point)
         for p in lst:
             x1, y1 = self.point2percent(p)
-            x2, y2 = self.point2percent(point)
             if abs(x1 - x2) >= self.deviation_max or abs(y1 - y2) >= self.deviation_max:
                 return True
         return False
