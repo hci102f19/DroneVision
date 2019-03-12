@@ -27,23 +27,7 @@ while frame_buffer.running():
         if damped_center is not None:
             if not center_box.intersects(damped_center):
                 x, y = center_box.flight(damped_center)
-
-                # frame_buffer.kill()
-
-
-
                 print(f'x: {x}, y: {y}')
-
-                # x, y = center_box.flight(damped_center)
-                #
-                # if x < 0:
-                #     print(f"MOVE X DOWN: {x}")
-                # if x > 0:
-                #     print(f"MOVE X UP: {x}")
-                # if y < 0:
-                #     print(f"MOVE Y LEFT: {y}")
-                # if y > 0:
-                #     print(f"MOVE Y RIGHT: {y}")
 
             damped_center.render(frame)
             center_box.render(frame, damped_center)
