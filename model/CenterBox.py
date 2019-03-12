@@ -10,12 +10,12 @@ class CenterBox(object):
         self.h_center = h_center
         self.h_offset = h_offset
 
-        x1 = int(width * ((1 - w_center) / 2))
-        y1 = int(height * (((1 - h_center) / 2) - h_offset))
-        x2 = int(width * (1 - ((1 - w_center) / 2)))
-        y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
+        self.x1 = int(width * ((1 - w_center) / 2))
+        self.y1 = int(height * (((1 - h_center) / 2) - h_offset))
+        self.x2 = int(width * (1 - ((1 - w_center) / 2)))
+        self.y2 = int(height * ((1 - ((1 - h_center) / 2)) - h_offset))
 
-        self.box = Box(x1, y1, x2, y2)
+        self.box = Box(self.x1, self.y1, self.x2, self.y2)
 
     def render(self, image):
         self.box.render(image)

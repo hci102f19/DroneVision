@@ -90,7 +90,7 @@ def show(image, **kwargs):
         if diff > 0:
             fps_nbr = round(1 / diff, 1)
         else:
-            fps_nbr = 'inf.'
+            fps_nbr = 'inf'
         fps_ = str(fps_nbr)
 
         if kwargs.get('fps_target', None) is not None:

@@ -85,7 +85,9 @@ class Canny(object):
 
             if points:
                 points_ = [(p.x_point, p.y_point) for p in points]
-                clustering = DBSCAN(eps=20, min_samples=5).fit(points_)
+                min_samples = int(round(len(points_) * 0.05, 0))
+
+                clustering = DBSCAN(eps=20, min_samples=min_samples).fit(points_)
 
                 clusters = {}
 
@@ -100,6 +102,7 @@ class Canny(object):
                 if clusters:
                     c = [c for _, c in clusters.items()]
                     c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+                    # c = sorted(c, key=lambda c_: c_.density(), reverse=True)
 
                     cgc = GeometryCollection(c[0].points)
 
