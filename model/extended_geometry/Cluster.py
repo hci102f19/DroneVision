@@ -59,6 +59,7 @@ class Cluster(object):
             bz = Box(x1, y1, x2, y2)
             if bz.area > 0:
                 self.cdensity = self.csize * 2 / bz.area
-            self.cdensity = 0
+            else:
+                self.cdensity = 0
 
         return self.cdensity
