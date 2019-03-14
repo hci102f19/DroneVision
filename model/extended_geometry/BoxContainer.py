@@ -30,7 +30,7 @@ class BoxContainer(object):
 
     def hit(self, point: Point):
         for box in self.boxes:
-            if box.intersects(point):
+            if box.hit(point):
                 return box
         return None
 

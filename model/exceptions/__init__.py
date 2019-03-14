@@ -12,3 +12,7 @@ class TooManyLines(Exception):
 
 class TooManyPoints(Exception):
     pass
+
+
+class Quit(Exception):
+    pass

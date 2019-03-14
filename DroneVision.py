@@ -46,10 +46,13 @@ class DroneVision(Canny):
                 k = show(frame, fps=True, fps_target=10, wait=1)
 
                 if k == 27:
-                    self.buffer.kill()
+                    self.kill()
 
-                    if self.kill_function is not None:
-                        self.kill_function()
+    def kill(self):
+        self.buffer.kill()
+
+        if self.kill_function is not None:
+            self.kill_function()
 
     def render(self, image):
         for element in self.renders:
