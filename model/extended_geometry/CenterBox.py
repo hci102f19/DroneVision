@@ -1,3 +1,4 @@
+from matplotlib.cbook import deprecated
 from scipy.interpolate import interp1d
 
 from model.geometry.Box import Box
@@ -5,6 +6,7 @@ from model.geometry.Point import Point
 
 
 class CenterBox(object):
+    @deprecated("0.0", message="Use BoxContainer instead")
     def __init__(self, width, height, w_center, h_center, h_offset):
         self.width = width
         self.height = height
