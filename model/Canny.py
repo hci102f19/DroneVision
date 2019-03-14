@@ -13,7 +13,7 @@ from model.geometry.Point import Point
 
 
 class Canny(object):
-    def __init__(self):
+    def __init__(self, x, y):
         self.canny_threshold = 50
 
         self.theta = 150
@@ -25,7 +25,7 @@ class Canny(object):
 
         self.line_max = 100
 
-        self.filtering = SFiltering(6)
+        self.filtering = SFiltering(x, y, history_size=6)
 
     def calculate_theta(self, lines):
         if self.last_frame_count is not None:

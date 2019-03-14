@@ -9,11 +9,11 @@ class SFiltering(object):
     An Naïve approach to GPS smoothing
     """
 
-    def __init__(self, history_size=6, xmax=640, ymax=480):
+    def __init__(self, xmax, ymax, **kwargs):
         self.points = []
         self.rejected_list = []
 
-        self.history_size = history_size
+        self.history_size = kwargs.get('history_size', 6)
 
         self.xmax = xmax
         self.ymax = ymax

@@ -4,7 +4,7 @@ import cv2
 
 
 class Buffer(threading.Thread):
-    def __init__(self, stream, x=640, y=360):
+    def __init__(self, stream, x, y):
         super().__init__()
 
         self.stream = stream

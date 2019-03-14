@@ -6,11 +6,10 @@ from model.containers.BoxContainer import BoxContainer
 
 class DroneVision(Canny):
     def __init__(self, buffer, **kwargs):
-        super().__init__()
-
         if not isinstance(buffer, Buffer):
             raise Exception('Type is not buffer')
 
+        super().__init__(*buffer.size)
         self.buffer = buffer
 
         self.box_container = BoxContainer(*self.buffer.size)

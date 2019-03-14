@@ -6,7 +6,7 @@ from model.buffers import Buffer
 
 
 class FrameBuffer(Buffer):
-    def __init__(self, stream, x=640, y=360):
+    def __init__(self, stream, x, y):
         if not isinstance(stream, cv2.VideoCapture):
             raise Exception("Not video stream")
 

@@ -5,7 +5,7 @@ from model.buffers.FrameBuffer import FrameBuffer
 from model.exceptions import Quit
 
 stream = cv2.VideoCapture('./source/video.v2.mp4')
-frame_buffer = FrameBuffer(stream)
+frame_buffer = FrameBuffer(stream, 640, 360)
 
 try:
     drone_vision = DroneVision(frame_buffer)
