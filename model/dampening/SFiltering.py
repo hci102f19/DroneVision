@@ -24,8 +24,12 @@ class SFiltering(object):
         return point.x_point / self.xmax, point.y_point / self.ymax
 
     def add(self, point):
+        if point is None:
+            return
+
         if 0 > point.y_point or point.y_point > self.ymax or 0 > point.x_point or point.x_point > self.xmax:
             return
+
         if not self.points:
             self.points.append(point)
             return
@@ -36,7 +40,7 @@ class SFiltering(object):
         else:
             # self.rejected_list.append(point)
             self.rejected_list = self.rejected_list[-(self.history_size - 1):] + [point]
-            if len(self.rejected_list) > int(self.history_size / 2) and not self.deviate(self.rejected_list, point):
+            if len(self.rejected_list) > self.history_size and not self.deviate(self.rejected_list, point):
                 print("SETTING NEW POINTS LIST!")
                 self.points.clear()
                 for p in self.rejected_list:

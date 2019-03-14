@@ -5,10 +5,11 @@ import numpy as np
 from shapely.geometry import GeometryCollection, LineString
 from sklearn.cluster import DBSCAN
 
+from model.dampening.SFiltering import SFiltering
+from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
 from model.extended_geometry.Cluster import Cluster
 from model.geometry.Line import Line
 from model.geometry.Point import Point
-from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
 
 
 class Canny(object):
@@ -22,6 +23,8 @@ class Canny(object):
         self.last_time_count = time()
 
         self.line_max = 100
+
+        self.filtering = SFiltering(6)
 
     def calculate_theta(self, lines):
         if self.last_frame_count is not None:
@@ -72,8 +75,7 @@ class Canny(object):
 
         return self.clustering(lines_)
 
-    @staticmethod
-    def clustering(lines):
+    def clustering(self, lines):
         gc = GeometryCollection(lines)
 
         try:
@@ -101,13 +103,14 @@ class Canny(object):
 
                 if clusters:
                     c = [c for _, c in clusters.items()]
-                    c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
-                    # c = sorted(c, key=lambda c_: c_.density(), reverse=True)
+                    # c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
+                    c = sorted(c, key=lambda c_: c_.density(), reverse=True)
 
                     cgc = GeometryCollection(c[0].points)
+                    self.filtering.add(Point(*cgc.centroid.xy))
 
-                    return c, Point(*cgc.centroid.xy)
-            return [], None
+                    return c, self.filtering.get_point()
+            return [], self.filtering.get_point()
         except TypeError as e:
             print(str(e))
-            return [], None
+            return [], self.filtering.get_point()

@@ -1,10 +1,13 @@
 from libs import show
+from model.Canny import Canny
 from model.buffers import Buffer
 from model.extended_geometry.BoxContainer import BoxContainer
 
 
-class DroneVision(object):
+class DroneVision(Canny):
     def __init__(self, buffer):
+        super().__init__()
+
         if not isinstance(buffer, Buffer):
             raise Exception('Type is not buffer')
 
@@ -16,12 +19,20 @@ class DroneVision(object):
             self.box_container
         ]
 
+        self.color = (0, 0, 0)
+
     def start(self):
         self.buffer.start()
 
         while self.buffer.running():
             frame = self.buffer.pop()
             if frame is not None:
+                clusters, center = self.process_frame(frame)
+
+                for c in clusters:
+                    c.render(frame, self.color)
+                if center is not None:
+                    center.render(frame, self.color)
 
                 self.render(frame)
                 k = show(frame, fps=True, fps_target=10, wait=1)
@@ -31,4 +42,4 @@ class DroneVision(object):
 
     def render(self, image):
         for element in self.renders:
-            element.render(image)
+            element.render(image, self.color)

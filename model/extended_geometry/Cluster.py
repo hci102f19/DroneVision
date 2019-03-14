@@ -1,3 +1,5 @@
+import math
+
 import cv2
 import numpy as np
 
@@ -11,10 +13,10 @@ class Cluster(object):
         self.csize = 0
         self.cluster_density = None
 
-        self._color = [int(c) for c in list(np.random.choice(range(256), size=3))]
+        self.color = [int(c) for c in list(np.random.choice(range(256), size=3))]
 
-        self.border = 2
-        self.modifier = 2
+        self.border = 1
+        self.modifier = 3
 
     def add(self, point):
         self.points.append(point)
@@ -36,22 +38,23 @@ class Cluster(object):
 
         return self.min(x), self.min(y), self.max(x), self.max(y)
 
-    def render(self, image):
+    def render(self, image, color=None):
         for p in self.points:
-            p.render(image)
+            p.render(image, color)
 
         x1, y1, x2, y2 = self.get_corners()
 
-        cv2.rectangle(image, (x1, y1), (x2, y2), self._color, self.border)
+        cv2.rectangle(image, (x1, y1), (x2, y2), self.color if color is None else color, self.border)
 
     def density(self):
         if self.cluster_density is None:
             x1, y1, x2, y2 = self.get_corners()
 
-            cluster_container = Box(x1, y1, x2, y2)
+            area = Box(x1, y1, x2, y2).area
 
-            if cluster_container.area > 0:
-                self.cluster_density = self.csize * self.modifier / cluster_container.area
+            if area > 0 and math.log(area) > 0:
+                # self.cluster_density = self.csize * self.modifier / cluster_container.area
+                self.cluster_density = math.log(self.csize) * self.modifier / math.log(area)
             else:
                 self.cluster_density = 0
 

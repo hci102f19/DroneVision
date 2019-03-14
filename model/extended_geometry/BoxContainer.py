@@ -27,6 +27,6 @@ class BoxContainer(object):
             self.center,
         ]
 
-    def render(self, image):
+    def render(self, image, color):
         for box in self.boxes:
-            box.render(image)
+            box.render(image, color)
