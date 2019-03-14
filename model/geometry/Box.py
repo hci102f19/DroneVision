@@ -1,6 +1,7 @@
 import cv2
 from shapely.geometry import Polygon
 
+from model.flight.Vector import Vector
 from model.geometry.Point import Point
 
 
@@ -31,5 +32,5 @@ class Box(Polygon):
         cv2.circle(image, (int(self.center[0]), int(self.center[1])), 5, self.color, -1)
         cv2.rectangle(image, (self.x1, self.y1), (self.x2, self.y2), self.color if color is None else color, 3)
 
-    def hit(self, point: Point):
+    def hit(self, point: Point, vector: Vector):
         raise NotImplemented()
