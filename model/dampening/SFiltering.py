@@ -40,7 +40,7 @@ class SFiltering(object):
         else:
             # self.rejected_list.append(point)
             self.rejected_list = self.rejected_list[-(self.history_size - 1):] + [point]
-            if len(self.rejected_list) > self.history_size and not self.deviate(self.rejected_list, point):
+            if len(self.rejected_list) >= self.history_size and not self.deviate(self.rejected_list, point):
                 print("SETTING NEW POINTS LIST!")
                 self.points.clear()
                 for p in self.rejected_list:

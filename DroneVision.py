@@ -5,7 +5,7 @@ from model.extended_geometry.BoxContainer import BoxContainer
 
 
 class DroneVision(Canny):
-    def __init__(self, buffer):
+    def __init__(self, buffer, **kwargs):
         super().__init__()
 
         if not isinstance(buffer, Buffer):
@@ -20,6 +20,8 @@ class DroneVision(Canny):
         ]
 
         self.color = (0, 0, 0)
+
+        self.kill_function = kwargs.get('kill_function', None)
 
     def start(self):
         self.buffer.start()
@@ -39,6 +41,9 @@ class DroneVision(Canny):
 
                 if k == 27:
                     self.buffer.kill()
+
+                    if self.kill_function is not None:
+                        self.kill_function()
 
     def render(self, image):
         for element in self.renders:

@@ -37,8 +37,8 @@ class Canny(object):
 
         timestamp = time()
 
+        # Our DEADLINE is 10 fps, so if a tick took more then 0.1 sec, increase l_theta
         if timestamp - self.last_time_count > 1 / 10:
-            # TODO: Time check, if too long, increase l_theta
             print(f'Too slow, increasing l_theta to {self.theta}')
             self.theta += int(self.theta_modifier * 0.5)
         elif lines < 10 and self.theta > int(round(self.theta_modifier * modifier, 0)):
