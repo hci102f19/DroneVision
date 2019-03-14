@@ -11,5 +11,4 @@ while frame_buffer.running():
     frame = frame_buffer.pop()
     if frame is not None:
 
-
         show(frame, fps=True, fps_target=10, wait=1)

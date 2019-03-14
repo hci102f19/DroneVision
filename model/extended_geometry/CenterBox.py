@@ -1,7 +1,7 @@
 from scipy.interpolate import interp1d
 
-from model.Box import Box
-from model.Point import Point
+from model.geometry.Box import Box
+from model.geometry.Point import Point
 
 
 class CenterBox(object):

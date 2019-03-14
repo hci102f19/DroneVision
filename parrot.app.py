@@ -3,8 +3,8 @@ from pyparrot.Bebop import Bebop
 
 from libs import show
 from model.Canny import Canny
-from model.CenterBox import CenterBox
-from model.SFiltering import SFiltering
+from model.extended_geometry.CenterBox import CenterBox
+from model.dampening.SFiltering import SFiltering
 from model.buffers.StreamBuffer import StreamBuffer
 
 # Thanks:

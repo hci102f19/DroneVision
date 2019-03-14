@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-from model.Box import Box
+from model.geometry.Box import Box
 
 
 class Cluster(object):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from model.Point import Point
+from model.geometry.Point import Point
 
 
 class SFiltering(object):

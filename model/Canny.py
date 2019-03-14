@@ -5,9 +5,9 @@ import numpy as np
 from shapely.geometry import GeometryCollection, LineString
 from sklearn.cluster import DBSCAN
 
-from model.Cluster import Cluster
-from model.Line import Line
-from model.Point import Point
+from model.extended_geometry.Cluster import Cluster
+from model.geometry.Line import Line
+from model.geometry.Point import Point
 from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
 
 
