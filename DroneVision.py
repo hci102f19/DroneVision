@@ -33,10 +33,16 @@ class DroneVision(Canny):
 
                 for c in clusters:
                     c.render(frame, self.color)
+
                 if center is not None:
                     center.render(frame, self.color)
 
                 self.render(frame)
+
+                asdf = self.box_container.hit(center)
+                if asdf is not None:
+                    asdf.render(frame, (255, 0, 0))
+
                 k = show(frame, fps=True, fps_target=10, wait=1)
 
                 if k == 27:

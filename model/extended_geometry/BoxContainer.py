@@ -1,11 +1,12 @@
 from model.extended_geometry.hitbox.HitBox import HitBox
 from model.extended_geometry.hitbox.ReverseHitBox import ReverseHitBox
+from model.geometry.Point import Point
 
 
 class BoxContainer(object):
     def __init__(self, x, y, **kwargs):
-        height = kwargs.get('height', 0.4)
-        width = kwargs.get('width', 0.45)
+        height = kwargs.get('height', 0.75)
+        width = kwargs.get('width', 0.50)
 
         center_width = kwargs.get('w_center', 0.1)
         center_height = kwargs.get('h_center', 0.2)
@@ -26,6 +27,12 @@ class BoxContainer(object):
             self.rb,
             self.center,
         ]
+
+    def hit(self, point: Point):
+        for box in self.boxes:
+            if box.intersects(point):
+                return box
+        return None
 
     def render(self, image, color):
         for box in self.boxes:
