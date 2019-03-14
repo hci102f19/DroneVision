@@ -73,7 +73,7 @@ class Canny(object):
             except (TooManyLines, TooManyPoints):
                 pass
 
-        return self.clustering(lines_)
+        self.clustering(lines_)
 
     def clustering(self, lines):
         gc = GeometryCollection(lines)
@@ -109,8 +109,11 @@ class Canny(object):
                     cgc = GeometryCollection(c[0].points)
                     self.filtering.add(Point(*cgc.centroid.xy))
 
-                    return c, self.filtering.get_point()
-            return [], self.filtering.get_point()
+                    return
+            return
         except TypeError as e:
             print(str(e))
-            return [], self.filtering.get_point()
+            return
+
+    def get_center(self):
+        return self.filtering.get_point()

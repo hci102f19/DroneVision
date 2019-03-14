@@ -18,6 +18,7 @@ class DroneVision(Canny):
         self.renders = [
             self.box_container
         ]
+        self.tmp_renders = []
 
         self.color = (0, 0, 0)
 
@@ -29,20 +30,11 @@ class DroneVision(Canny):
         while self.buffer.running():
             frame = self.buffer.pop()
             if frame is not None:
-                clusters, center = self.process_frame(frame)
+                self.process_frame(frame)
 
-                for c in clusters:
-                    c.render(frame, self.color)
-
-                if center is not None:
-                    center.render(frame, self.color)
+                self.box_container.hit(self.get_center())
 
                 self.render(frame)
-
-                asdf = self.box_container.hit(center)
-                if asdf is not None:
-                    asdf.render(frame, (255, 0, 0))
-
                 k = show(frame, fps=True, fps_target=10, wait=1)
 
                 if k == 27:
@@ -55,5 +47,6 @@ class DroneVision(Canny):
             self.kill_function()
 
     def render(self, image):
+        self.get_center().render(image)
         for element in self.renders:
             element.render(image, self.color)

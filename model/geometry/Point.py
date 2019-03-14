@@ -26,7 +26,7 @@ class Point(BasePoint):
         self.cluster = cluster
         self.cluster.add(self)
 
-    def render(self, image, color):
+    def render(self, image, color=None):
         if self.valid:
             if self.cluster is not None:
                 cv2.circle(image, (int(self.x), int(self.y)), 1, self.cluster.color, -1)
