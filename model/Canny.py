@@ -5,9 +5,9 @@ import numpy as np
 from shapely.geometry import GeometryCollection, LineString
 from sklearn.cluster import DBSCAN
 
+from model.containers.Clusters import Clusters
 from model.dampening.SFiltering import SFiltering
 from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
-from model.extended_geometry.Cluster import Cluster
 from model.geometry.Line import Line
 from model.geometry.Point import Point
 
@@ -19,6 +19,7 @@ class Canny(object):
         self.theta = 150
         self.theta_modifier = 5
 
+        self._latest_clusters = None
         self.last_frame_count = None
         self.last_time_count = time()
 
@@ -91,29 +92,25 @@ class Canny(object):
 
                 clustering = DBSCAN(eps=20, min_samples=min_samples).fit(points_)
 
-                clusters = {}
+                clusters = Clusters()
 
                 for idx, kl in enumerate(clustering.labels_):
+                    # All points marked with -1 is noise
                     if kl == -1:
                         continue
-                    if kl not in clusters:
-                        clusters[kl] = Cluster()
-
-                    points[idx].set_cluster(clusters[kl])
+                    points[idx].set_cluster(clusters.get_cluster(kl))
 
                 if clusters:
-                    c = [c for _, c in clusters.items()]
-                    # c = sorted(c, key=lambda c_: c_.cluster_size(), reverse=True)
-                    c = sorted(c, key=lambda c_: c_.density(), reverse=True)
+                    self._latest_clusters = clusters.as_list()
 
-                    cgc = GeometryCollection(c[0].points)
-                    self.filtering.add(Point(*cgc.centroid.xy))
-
-                    return
+                    self.filtering.add(clusters.best_cluster_as_point())
             return
         except TypeError as e:
             print(str(e))
             return
+
+    def get_latest_clusters(self):
+        return self._latest_clusters
 
     def get_center(self):
         return self.filtering.get_point()

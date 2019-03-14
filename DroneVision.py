@@ -1,7 +1,7 @@
 from libs import show
 from model.Canny import Canny
 from model.buffers import Buffer
-from model.extended_geometry.BoxContainer import BoxContainer
+from model.containers.BoxContainer import BoxContainer
 
 
 class DroneVision(Canny):
@@ -28,11 +28,15 @@ class DroneVision(Canny):
         self.buffer.start()
 
         while self.buffer.running():
+            self.tmp_renders = []
             frame = self.buffer.pop()
             if frame is not None:
                 self.process_frame(frame)
 
                 self.box_container.hit(self.get_center())
+
+                for c in self.get_latest_clusters():
+                    self.tmp_renders.append(c)
 
                 self.render(frame)
                 k = show(frame, fps=True, fps_target=10, wait=1)
@@ -48,5 +52,5 @@ class DroneVision(Canny):
 
     def render(self, image):
         self.get_center().render(image)
-        for element in self.renders:
+        for element in self.tmp_renders + self.renders:
             element.render(image, self.color)
