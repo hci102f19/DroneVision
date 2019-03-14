@@ -1,25 +1,18 @@
-import threading
 from time import time, sleep
 
 import cv2
 
+from model.buffers import Buffer
 
-class FrameBuffer(threading.Thread):
+
+class FrameBuffer(Buffer):
     def __init__(self, stream, x=640, y=360):
-        super().__init__()
-
         if not isinstance(stream, cv2.VideoCapture):
             raise Exception("Not video stream")
 
-        self.stream = stream
+        super().__init__(stream, x, y)
 
         self.fps = self.stream.get(cv2.CAP_PROP_FPS)
-
-        self._current_frame = None
-        self._running = False
-
-        self.size = (x, y)
-        self.blur = 3
 
         self.overflow = 0
         self.sleep_timer = 1 / self.fps
@@ -42,28 +35,10 @@ class FrameBuffer(threading.Thread):
         while success and self._running:
             start = time()
 
-            frame = image
-
-            frame = cv2.resize(frame, self.size)
-            frame = cv2.GaussianBlur(frame, (self.blur, self.blur), 0)
-
-            self._current_frame = frame
+            self._latest_frame = self.pre_process_frame(image)
             success, image = self.stream.read()
 
             self.sleep(time() - start)
 
         self._running = False
-        self._current_frame = None
-
-    def get(self):
-        return self._current_frame
-
-    def pop(self):
-        frame, self._current_frame = self._current_frame, None
-        return frame
-
-    def running(self):
-        return self._running
-
-    def kill(self):
-        self._running = False
+        self._latest_frame = None
