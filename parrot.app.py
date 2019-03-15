@@ -17,7 +17,7 @@ if success:
     bebop.start_video_stream()
 
     cam = cv2.VideoCapture("./ParrotStream/bebop.sdp")
-    stream = StreamBuffer(cam)
+    stream = StreamBuffer(cam, 640, 480)
 
 
     def kill_function():
