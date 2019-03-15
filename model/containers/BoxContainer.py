@@ -12,6 +12,7 @@ class BoxContainer(object):
         hitbox_width = kwargs.get('hitbox_width', 0.17)
         hitbox_horizontal_offset = kwargs.get('hitbox_horizontal_offset', 0.18)
         hitbox_vertical_offset = kwargs.get('hitbox_vertical_offset', -0.10)
+        hitbox_rotation = kwargs.get('hitbox_rotation', 30)
 
         center_width = kwargs.get('w_center', 0.1)
         center_height = kwargs.get('h_center', 0.2)
@@ -23,7 +24,7 @@ class BoxContainer(object):
             x * hitbox_width + (hitbox_horizontal_offset * x),
             y * (1 - hitbox_height) - (hitbox_vertical_offset * y),
             force=50,
-            rotation=0
+            rotation=hitbox_rotation
         )
         self.rb = HitBox(
             x - (hitbox_horizontal_offset * x),
@@ -31,7 +32,7 @@ class BoxContainer(object):
             x * (1 - hitbox_width) - (hitbox_horizontal_offset * x),
             y * (1 - hitbox_height) - (hitbox_vertical_offset * y),
             force=-50,
-            rotation=0
+            rotation=-hitbox_rotation
         )
 
         self.x = x
