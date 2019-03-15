@@ -32,12 +32,11 @@ class DroneVision(Canny):
             if frame is not None:
                 self.process_frame(frame)
 
-                self.box_container.hit(self.get_center())
-
                 for c in self.get_latest_clusters():
                     self.tmp_renders.append(c)
 
                 self.render(frame)
+                self.box_container.hit(self.get_center(), frame)
                 k = show(frame, fps=True, fps_target=10, wait=1)
 
                 if k == 27:

@@ -14,3 +14,5 @@ class HitBox(Box):
     def hit(self, point: Point, vector: Vector):
         if self.intersects(point):
             vector.set_roll(self.force)
+            return True
+        return False

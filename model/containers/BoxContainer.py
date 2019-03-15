@@ -9,8 +9,8 @@ from model.geometry.Point import Point
 
 class BoxContainer(object):
     def __init__(self, x, y, **kwargs):
-        height = kwargs.get('height', 0.40)
-        width = kwargs.get('width', 0.20)
+        height = kwargs.get('height', 1.000)
+        width = kwargs.get('width', 0.40)
 
         center_width = kwargs.get('w_center', 0.1)
         center_height = kwargs.get('h_center', 0.2)
@@ -35,11 +35,12 @@ class BoxContainer(object):
             self.center,
         ]
 
-    def hit(self, point: Point):
+    def hit(self, point: Point, frame):
         # self.load_config()
         vector = Vector()
         for box in self.boxes:
-            box.hit(point, vector)
+            if box.hit(point, vector):
+                box.render(frame, (255, 255, 255))
 
         if not vector.is_null():
             print("WE NEED TO MOVE BOIZ!")

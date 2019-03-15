@@ -17,7 +17,11 @@ class ReverseHitBox(Box):
         if not self.ymin <= point.y_point <= self.ymax:
             vector.set_vertical_movement(self.calculate_vertical(point.y_point))
 
-        return vector
+        return True
+
+    def rotate(self, degrees):
+        # This element should not be rotateable
+        return
 
     def calculate_horizontal(self, x):
         center_x, _ = self.center
