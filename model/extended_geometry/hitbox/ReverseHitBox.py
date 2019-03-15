@@ -7,17 +7,14 @@ class ReverseHitBox(Box):
     def __init__(self, x1, y1, x2, y2, **kwargs):
         super().__init__(x1, y1, x2, y2, **kwargs)
 
-        # self.y_calc_pos = interp1d([0, self.height - self.center.y_point], [0, 100])
-        # self.y_calc_neg = interp1d([-self.center.y_point, 0], [-100, 0])
-
     def hit(self, point: Point, vector: Vector):
         if self.intersects(point):
             return False
 
-        if not self.min_x <= point.x_point <= self.max_x:
+        if not self.xmin <= point.x_point <= self.xmax:
             vector.set_yaw(self.calculate_horizontal(point.x_point))
 
-        if not self.min_y <= point.y_point <= self.max_y:
+        if not self.ymin <= point.y_point <= self.ymax:
             vector.set_vertical_movement(self.calculate_vertical(point.y_point))
 
         return vector
