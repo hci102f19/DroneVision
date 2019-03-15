@@ -37,5 +37,5 @@ class Line(LineString):
         if 90 - self.angle_threshold <= c_angle <= 90 + self.angle_threshold:
             raise InvalidLine('Line not within angle scope')
 
-    def render(self, image):
-        cv2.line(image, (self.x1, self.y1), (self.x2, self.y2), (0, 0, 255), 2)
+    def render(self, image, color=None):
+        cv2.line(image, (self.x1, self.y1), (self.x2, self.y2), (0, 0, 255) if color is None else color, 2)

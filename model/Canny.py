@@ -23,6 +23,9 @@ class Canny(object):
         self.last_frame_count = None
         self.last_time_count = time()
 
+        self.edges = None
+        self.lines = []
+
         self.line_max = 100
 
         self.filtering = SFiltering(x, y, history_size=6)
@@ -56,10 +59,10 @@ class Canny(object):
             raise TooManyLines()
 
     def process_frame(self, frame):
-        lines_ = []
-        edges = cv2.Canny(frame, self.canny_threshold, self.canny_threshold * 3, apertureSize=3)
+        self.lines.clear()
+        self.edges = cv2.Canny(frame, self.canny_threshold, self.canny_threshold * 3, apertureSize=3)
 
-        lines = cv2.HoughLines(edges, 2, np.pi / 180, self.theta)
+        lines = cv2.HoughLines(self.edges, 2, np.pi / 180, self.theta)
         if lines is not None:
             try:
                 self.calculate_theta(len(lines))
@@ -67,17 +70,17 @@ class Canny(object):
                 for line_data in lines:
                     try:
                         line = Line(*line_data.T)
-                        lines_.append(line)
+                        self.lines.append(line)
 
                     except (IsNan, InvalidLine):
                         pass
             except (TooManyLines, TooManyPoints):
                 pass
 
-        self.clustering(lines_)
+        self.clustering()
 
-    def clustering(self, lines):
-        gc = GeometryCollection(lines)
+    def clustering(self):
+        gc = GeometryCollection(self.lines)
 
         try:
             intersections = gc.intersection(gc)

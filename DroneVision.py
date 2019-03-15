@@ -35,6 +35,9 @@ class DroneVision(Canny):
                 for c in self.get_latest_clusters():
                     self.tmp_renders.append(c)
 
+                # for l in self.lines:
+                #     self.tmp_renders.append(l)
+
                 self.render(frame)
                 self.box_container.hit(self.get_center(), frame)
                 k = show(frame, fps=True, fps_target=10, wait=1)
