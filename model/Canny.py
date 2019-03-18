@@ -29,6 +29,7 @@ class Canny(object):
         self.line_max = 100
 
         self.filtering = SFiltering(x, y, history_size=6)
+        self.newest_center = None
 
     def calculate_theta(self, lines):
         if self.last_frame_count is not None:
@@ -106,7 +107,10 @@ class Canny(object):
                 if clusters:
                     self._latest_clusters = clusters.as_list()
 
-                    self.filtering.add(clusters.best_cluster_as_point())
+                    self.newest_center = clusters.best_cluster_as_point()
+                    self.filtering.add(self.newest_center)
+            else:
+                self.newest_center = None
             return
         except TypeError as e:
             print(str(e))
@@ -117,3 +121,6 @@ class Canny(object):
 
     def get_center(self):
         return self.filtering.get_point()
+
+    def get_newest_center(self):
+        return self.newest_center

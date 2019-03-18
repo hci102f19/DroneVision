@@ -1,5 +1,3 @@
-import json
-
 from model.extended_geometry.hitbox.HitBox import HitBox
 from model.extended_geometry.hitbox.ReverseHitBox import ReverseHitBox
 from model.flight.Vector import Vector
@@ -51,16 +49,11 @@ class BoxContainer(object):
             self.center,
         ]
 
-    def hit(self, point: Point, frame):
+    def hit(self, point: Point):
         vector = Vector()
         for box in self.boxes:
-            if box.hit(point, vector):
-                box.render(frame, (255, 255, 255))
-
-        if not vector.is_null():
-            print("WE NEED TO MOVE BOIZ!")
-            print(json.dumps(vector.emit(), indent=4))
-        return None
+            box.hit(point, vector)
+        return vector
 
     def render(self, image, color):
         for box in self.boxes:
