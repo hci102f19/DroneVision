@@ -3,6 +3,7 @@ from model.Canny import Canny
 from model.buffers import Buffer
 from model.containers.BoxContainer import BoxContainer
 from model.exceptions import InvalidVideoBuffer
+from model.key import Key
 
 
 class DroneVision(Canny):
@@ -22,8 +23,7 @@ class DroneVision(Canny):
 
         self.view = True
 
-        self.fly = False
-        self.key_down = False
+        self.fly = Key()
 
         self.color = (0, 0, 0)
 
@@ -55,11 +55,7 @@ class DroneVision(Canny):
             if key == 27:
                 self.kill()
 
-            if key == 119 and not self.key_down:
-                self.key_down = True
-                self.fly = not self.fly
-            else:
-                self.key_down = False
+            self.fly.set(key, 119)
 
     def hit(self):
         self.box_container.hit(self.get_center())
