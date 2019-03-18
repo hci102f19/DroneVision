@@ -5,7 +5,7 @@ from model.containers.BoxContainer import BoxContainer
 
 
 class DroneVision(Canny):
-    def __init__(self, buffer, **kwargs):
+    def __init__(self, buffer):
         if not isinstance(buffer, Buffer):
             raise Exception('Type is not buffer')
 
@@ -20,8 +20,6 @@ class DroneVision(Canny):
         self.tmp_renders = []
 
         self.color = (0, 0, 0)
-
-        self.kill_function = kwargs.get('kill_function', None)
 
     def start(self):
         self.buffer.start()
@@ -43,9 +41,6 @@ class DroneVision(Canny):
 
     def kill(self):
         self.buffer.kill()
-
-        if self.kill_function is not None:
-            self.kill_function()
 
     def render(self, image):
         self.get_center().render(image)

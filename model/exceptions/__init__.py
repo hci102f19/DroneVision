@@ -16,3 +16,7 @@ class TooManyPoints(Exception):
 
 class Quit(Exception):
     pass
+
+
+class MissingEnvironmentVariable(Exception):
+    pass

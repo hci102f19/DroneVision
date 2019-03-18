@@ -5,8 +5,8 @@
 import cv2
 from pyparrot.Bebop import Bebop
 
-from model.vision.DroneVision import DroneVision
 from model.buffers.StreamBuffer import StreamBuffer
+from model.vision.BebopVision import BebopVision
 
 bebop = Bebop()
 
@@ -14,16 +14,8 @@ bebop = Bebop()
 success = bebop.connect(5)
 
 if success:
-    bebop.start_video_stream()
-
     cam = cv2.VideoCapture("./ParrotStream/bebop.sdp")
     stream = StreamBuffer(cam, 640, 480)
 
-
-    def kill_function():
-        bebop.stop_video_stream()
-        bebop.disconnect()
-
-
-    drone_vision = DroneVision(stream, kill_function=kill_function)
+    drone_vision = BebopVision(bebop, stream)
     drone_vision.start()
