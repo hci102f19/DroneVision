@@ -30,19 +30,26 @@ class DroneVision(Canny):
 
     def vision_loop(self):
         while self.buffer.running():
-            self.tmp_renders = []
+            self.tmp_renders.clear()
             frame = self.buffer.pop()
+
             if frame is not None:
                 self.process_frame(frame)
                 self.hit()
 
-                self.render(frame)
+                for cluster in self.get_latest_clusters():
+                    self.tmp_renders.append(cluster)
 
-                if self.view:
-                    k = show(frame, fps=True, fps_target=10, wait=1)
+                self.render_view(frame)
 
-                    if k == 27:
-                        self.kill()
+    def render_view(self, frame):
+        if self.view:
+            self.render(frame)
+
+            k = show(frame, fps=True, fps_target=10, wait=1)
+
+            if k == 27:
+                self.kill()
 
     def hit(self):
         self.box_container.hit(self.get_center())

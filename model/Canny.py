@@ -94,7 +94,7 @@ class Canny(object):
 
             if points:
                 points_ = [(p.x_point, p.y_point) for p in points]
-                min_samples = int(round(len(points_) * 0.05, 0))
+                min_samples = int(round(len(points_) * 0.1, 0))
 
                 clustering = DBSCAN(eps=20, min_samples=min_samples).fit(points_)
 
