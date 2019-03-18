@@ -11,7 +11,7 @@ class BebopWrapper(threading.Thread):
 
         self.bebop = bebop
 
-        self.__live = False
+        self.__live = True
 
         self._running = True
         self.next_command = None
@@ -31,6 +31,7 @@ class BebopWrapper(threading.Thread):
     def run(self):
         if self.__live:
             self.bebop.safe_takeoff(5)
+            self.bebop.fly_direct(0, 0, 0, -100, 1)
         else:
             print("self.bebop.safe_takeoff(5)")
 

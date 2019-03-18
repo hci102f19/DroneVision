@@ -41,8 +41,9 @@ class DroneVision(Canny):
                 self.process_frame(frame)
                 self.hit()
 
-                for cluster in self.get_latest_clusters():
-                    self.tmp_renders.append(cluster)
+                if self.get_latest_clusters() is not None:
+                    for cluster in self.get_latest_clusters():
+                        self.tmp_renders.append(cluster)
 
                 self.render_view(frame)
 
@@ -66,4 +67,5 @@ class DroneVision(Canny):
     def render(self, image):
 
         for element in [self.get_center()] + self.tmp_renders + self.renders:
-            element.render(image, self.color)
+            if element is not None:
+                element.render(image, self.color)

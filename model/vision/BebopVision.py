@@ -25,10 +25,14 @@ class BebopVision(DroneVision):
         self.vision_loop()
 
     def hit(self):
+        if self.get_center() is None or self.get_center().is_empty:
+            return
+
         vector = self.box_container.hit(self.get_center())
 
         if self.fly:
-            vector.set_pitch(50)
+            if vector.is_null():
+                vector.set_pitch(50)
 
         if not vector.is_null():
             self.bebop.enqueue_vector(vector)

@@ -14,8 +14,11 @@ class ReverseHitBox(Box):
         if not self.xmin <= point.x_point <= self.xmax:
             vector.set_yaw(self.calculate_horizontal(point.x_point))
 
+        """
+        TODO: We dont do vertical movements
         if not self.ymin <= point.y_point <= self.ymax:
             vector.set_vertical_movement(self.calculate_vertical(point.y_point))
+        """
 
         return True
 
@@ -25,7 +28,7 @@ class ReverseHitBox(Box):
 
     def calculate_horizontal(self, x):
         center_x, _ = self.center
-        return self.clamp(((x - center_x) / center_x) * 100, -100, 100) * -1
+        return self.clamp(((x - center_x) / center_x) * 100, -100, 100)
 
     def calculate_vertical(self, y):
         _, center_y = self.center
