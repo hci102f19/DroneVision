@@ -5,6 +5,8 @@ from time import time
 import cv2
 import pyttsx3
 
+from model.logging import log
+
 
 def clear_folder(folder: str):
     for file in glob.glob(f'{folder}/*'):
@@ -30,7 +32,7 @@ def make_video(images: list, file: str):
     # Release everything if job is finished
     out.release()
 
-    print("The output video is {}".format(file))
+    log("The output video is {}".format(file))
 
 
 def line_intersection(line1, line2):

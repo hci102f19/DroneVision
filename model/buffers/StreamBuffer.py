@@ -1,4 +1,5 @@
 from model.buffers import Buffer
+from model.logging import log
 
 
 class StreamBuffer(Buffer):
@@ -6,7 +7,7 @@ class StreamBuffer(Buffer):
         self._running = True
 
         while not self.stream.isOpened():
-            print("Waiting for stream to open")
+            log("Waiting for stream to open")
 
         success, image = self.stream.read()
         while success and self._running:

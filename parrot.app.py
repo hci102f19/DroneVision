@@ -5,7 +5,7 @@
 import cv2
 from pyparrot.Bebop import Bebop
 
-from DroneVision import DroneVision
+from model.vision.DroneVision import DroneVision
 from model.buffers.StreamBuffer import StreamBuffer
 
 bebop = Bebop()

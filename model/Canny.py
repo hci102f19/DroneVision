@@ -1,3 +1,4 @@
+import logging
 from time import time
 
 import cv2
@@ -10,6 +11,7 @@ from model.dampening.SFiltering import SFiltering
 from model.exceptions import IsNan, InvalidLine, TooManyLines, TooManyPoints
 from model.geometry.Line import Line
 from model.geometry.Point import Point
+from model.logging import log
 
 
 class Canny(object):
@@ -44,13 +46,13 @@ class Canny(object):
 
         # Our DEADLINE is 10 fps, so if a tick took more then 0.1 sec, increase l_theta
         if timestamp - self.last_time_count > 1 / 10:
-            print(f'Too slow, increasing l_theta to {self.theta}')
+            log(f'Too slow, increasing l_theta to {self.theta}', logging.INFO)
             self.theta += int(self.theta_modifier * 0.5)
         elif lines < 10 and self.theta > int(round(self.theta_modifier * modifier, 0)):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
-            print(f'Not enough data, decreasing l_theta to {self.theta}')
+            log(f'Not enough data, decreasing l_theta to {self.theta}', logging.INFO)
         elif lines > 50:
-            print(f'Too much data, increasing l_theta to {self.theta}')
+            log(f'Too much data, increasing l_theta to {self.theta}', logging.INFO)
             self.theta += int(round(self.theta_modifier * modifier, 0))
 
         self.last_frame_count = lines
@@ -113,7 +115,7 @@ class Canny(object):
                 self.newest_center = None
             return
         except TypeError as e:
-            print(str(e))
+            log(str(e), logging.ERROR)
             return
 
     def get_latest_clusters(self):

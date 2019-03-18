@@ -1,6 +1,7 @@
 import numpy as np
 
 from model.geometry.Point import Point
+from model.logging import log
 
 
 class SFiltering(object):
@@ -41,7 +42,7 @@ class SFiltering(object):
             # self.rejected_list.append(point)
             self.rejected_list = self.rejected_list[-(self.history_size - 1):] + [point]
             if len(self.rejected_list) >= self.history_size and not self.deviate(self.rejected_list, point):
-                print("SETTING NEW POINTS LIST!")
+                log("SETTING NEW POINTS LIST!")
                 self.points.clear()
                 for p in self.rejected_list:
                     self.points.append(p)

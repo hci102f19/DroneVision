@@ -1,6 +1,6 @@
 import cv2
 
-from DroneVision import DroneVision
+from model.vision.DroneVision import DroneVision
 from model.buffers.FrameBuffer import FrameBuffer
 from model.exceptions import Quit
 
