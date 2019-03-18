@@ -1,7 +1,3 @@
-# Thanks:
-# http://answers.opencv.org/question/192178/how-to-set-ffmpeg-option-protocol_whitelist-fileudprtp-in-videocapture/
-# os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'protocol_whitelist;file,rtp,udp'
-
 import cv2
 from pyparrot.Bebop import Bebop
 
