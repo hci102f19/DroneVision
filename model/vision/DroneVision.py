@@ -22,6 +22,9 @@ class DroneVision(Canny):
 
         self.view = True
 
+        self.fly = False
+        self.key_down = False
+
         self.color = (0, 0, 0)
 
     def start(self):
@@ -47,10 +50,16 @@ class DroneVision(Canny):
         if self.view:
             self.render(frame)
 
-            k = show(frame, fps=True, fps_target=10, wait=1)
+            key = show(frame, fps=True, fps_target=10, wait=1)
 
-            if k == 27:
+            if key == 27:
                 self.kill()
+
+            if key == 119 and not self.key_down:
+                self.key_down = True
+                self.fly = not self.fly
+            else:
+                self.key_down = False
 
     def hit(self):
         self.box_container.hit(self.get_center())
