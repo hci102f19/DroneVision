@@ -9,3 +9,5 @@ zeroconf
 
 Shapely
 matplotlib
+
+keyboard
