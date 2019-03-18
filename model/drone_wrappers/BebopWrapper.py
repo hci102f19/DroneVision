@@ -11,6 +11,8 @@ class BebopWrapper(threading.Thread):
 
         self.bebop = bebop
 
+        self.__live = False
+
         self._running = True
         self.next_command = None
 
@@ -27,16 +29,25 @@ class BebopWrapper(threading.Thread):
         self.next_command = vector
 
     def run(self):
-        print("self.bebop.safe_takeoff(5)")
+        if self.__live:
+            self.bebop.safe_takeoff(5)
+        else:
+            print("self.bebop.safe_takeoff(5)")
 
         while self._running:
             if self.next_command is None:
                 self.bebop.smart_sleep(0.1)
                 continue
 
-            print("FLY")
             cmd, self.next_command = self.next_command, None
-            self.bebop.fly_direct(**cmd.emit(), duration=0.1)
 
-        print("self.bebop.safe_land(5)")
+            if self.__live:
+                self.bebop.fly_direct(**cmd.emit(), duration=0.1)
+            else:
+                print(cmd.emit())
+
+        if self.__live:
+            self.bebop.safe_land(5)
+        else:
+            print("self.bebop.safe_land(5)")
         self.bebop.disconnect()

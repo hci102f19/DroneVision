@@ -20,13 +20,13 @@ class BebopVision(DroneVision):
     def start(self):
         self.buffer.start()
         self.bebop.smart_sleep(self.sleep)
-        self.bebop.run()
+        self.bebop.start()
 
         self.vision_loop()
 
     def hit(self):
         vector = self.box_container.hit(self.get_center())
-        # vector.set_pitch(50)
+        vector.set_pitch(50)
 
         if not vector.is_null():
             self.bebop.enqueue_vector(vector)
