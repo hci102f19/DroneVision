@@ -20,3 +20,15 @@ class Quit(Exception):
 
 class MissingEnvironmentVariable(Exception):
     pass
+
+
+class InvalidDroneType(Exception):
+    pass
+
+
+class InvalidVideoStream(Exception):
+    pass
+
+
+class InvalidVideoBuffer(Exception):
+    pass

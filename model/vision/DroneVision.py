@@ -2,12 +2,13 @@ from libs import show
 from model.Canny import Canny
 from model.buffers import Buffer
 from model.containers.BoxContainer import BoxContainer
+from model.exceptions import InvalidVideoBuffer
 
 
 class DroneVision(Canny):
     def __init__(self, buffer):
         if not isinstance(buffer, Buffer):
-            raise Exception('Type is not buffer')
+            raise InvalidVideoBuffer()
 
         super().__init__(*buffer.size)
         self.buffer = buffer
@@ -58,6 +59,6 @@ class DroneVision(Canny):
         self.buffer.kill()
 
     def render(self, image):
-        self.get_center().render(image)
-        for element in self.tmp_renders + self.renders:
+
+        for element in [self.get_center()] + self.tmp_renders + self.renders:
             element.render(image, self.color)

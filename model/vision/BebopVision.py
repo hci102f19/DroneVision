@@ -1,9 +1,15 @@
+from pyparrot.Bebop import Bebop
+
+from model.exceptions import InvalidDroneType
 from model.vision.DroneVision import DroneVision
 
 
 class BebopVision(DroneVision):
     def __init__(self, bebop, buffer, **kwargs):
         super().__init__(buffer)
+
+        if not isinstance(bebop, Bebop):
+            raise InvalidDroneType()
 
         self.bebop = bebop
         bebop.start_video_stream()

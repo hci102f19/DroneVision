@@ -3,12 +3,13 @@ from time import time, sleep
 import cv2
 
 from model.buffers import Buffer
+from model.exceptions import InvalidVideoStream
 
 
 class FrameBuffer(Buffer):
     def __init__(self, stream, x, y):
         if not isinstance(stream, cv2.VideoCapture):
-            raise Exception("Not video stream")
+            raise InvalidVideoStream()
 
         super().__init__(stream, x, y)
 
