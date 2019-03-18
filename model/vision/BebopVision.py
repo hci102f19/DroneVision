@@ -32,7 +32,7 @@ class BebopVision(DroneVision):
 
         if self.fly:
             if vector.is_null():
-                vector.set_pitch(50)
+                vector.set_pitch(10)
 
         if not vector.is_null():
             self.bebop.enqueue_vector(vector)
