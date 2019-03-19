@@ -1,3 +1,5 @@
+from statistics import mean
+
 import numpy as np
 
 from model.geometry.Point import Point
@@ -58,7 +60,7 @@ class SFiltering(object):
 
     @staticmethod
     def mean(val):
-        return int(round(np.mean(val), 0))
+        return int(round(mean(val), 0))
 
     def get_mean(self):
         x = [point.x_point for point in self.points]

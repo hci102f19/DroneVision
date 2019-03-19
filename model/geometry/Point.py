@@ -18,9 +18,6 @@ class Point(BasePoint):
     def points2point(x, y):
         return Point([x], [y])
 
-    def is_checked(self):
-        return self.checked
-
     def set_cluster(self, cluster):
         self.checked = True
         self.cluster = cluster
