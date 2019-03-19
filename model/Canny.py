@@ -16,10 +16,14 @@ from model.logging import log
 
 class Canny(object):
     def __init__(self, x, y):
-        self.canny_threshold = 50
+        self.canny_threshold = 55
+        self.canny_threshold_modifier = 3
 
         self.theta = 150
         self.theta_modifier = 5
+
+        self.min_lines = 20
+        self.max_lines = 75
 
         self._latest_clusters = None
         self.last_frame_count = None
@@ -45,13 +49,13 @@ class Canny(object):
         timestamp = time()
 
         # Our DEADLINE is 10 fps, so if a tick took more then 0.1 sec, increase l_theta
-        if timestamp - self.last_time_count > 1 / 10:
-            log(f'Too slow, increasing l_theta to {self.theta}', logging.INFO)
-            self.theta += int(self.theta_modifier * 0.5)
-        elif lines < 10 and self.theta > int(round(self.theta_modifier * modifier, 0)):
+        # if timestamp - self.last_time_count > 1 / 10:
+        #     log(f'Too slow, increasing l_theta to {self.theta}', logging.INFO)
+        #     self.theta += int(self.theta_modifier * 0.5)
+        if lines < self.min_lines and self.theta > int(round(self.theta_modifier * modifier, 0)):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
             log(f'Not enough data, decreasing l_theta to {self.theta}', logging.INFO)
-        elif lines > 50:
+        elif lines > self.max_lines:
             log(f'Too much data, increasing l_theta to {self.theta}', logging.INFO)
             self.theta += int(round(self.theta_modifier * modifier, 0))
 
@@ -63,7 +67,12 @@ class Canny(object):
 
     def process_frame(self, frame):
         self.lines.clear()
-        self.edges = cv2.Canny(frame, self.canny_threshold, self.canny_threshold * 3, apertureSize=3)
+        self.edges = cv2.Canny(
+            frame,
+            self.canny_threshold,
+            self.canny_threshold * self.canny_threshold_modifier,
+            apertureSize=3
+        )
 
         lines = cv2.HoughLines(self.edges, 2, np.pi / 180, self.theta)
         if lines is not None:
@@ -75,10 +84,10 @@ class Canny(object):
                         line = Line(*line_data.T)
                         self.lines.append(line)
 
-                    except (IsNan, InvalidLine):
+                    except (IsNan, InvalidLine) as e:
                         pass
             except (TooManyLines, TooManyPoints):
-                pass
+                return
 
         self.clustering()
 
@@ -106,7 +115,7 @@ class Canny(object):
                         continue
                     points[idx].set_cluster(clusters.get_cluster(kl))
 
-                if clusters:
+                if not clusters.is_empty():
                     self._latest_clusters = clusters.as_list()
 
                     self.newest_center = clusters.best_cluster_as_point()

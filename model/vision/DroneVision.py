@@ -59,7 +59,8 @@ class DroneVision(Canny):
             self.fly.set(key, 119)
 
     def hit(self):
-        self.box_container.hit(self.get_center())
+        if self.get_center() is not None:
+            self.box_container.hit(self.get_center())
 
     def kill(self):
         self.buffer.kill()

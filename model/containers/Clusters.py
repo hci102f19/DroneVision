@@ -22,3 +22,6 @@ class Clusters(object):
         cgc = GeometryCollection(clusters[0].points)
 
         return Point(*cgc.centroid.xy)
+
+    def is_empty(self):
+        return len(self.clusters) == 0

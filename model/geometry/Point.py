@@ -31,5 +31,5 @@ class Point(BasePoint):
             if self.cluster is not None:
                 cv2.circle(image, (int(self.x), int(self.y)), 1, self.cluster.color, -1)
             else:
-                cv2.circle(image, (int(self.x), int(self.y)), 5, (255, 255, 255) if color is None else color, -1)
-                cv2.circle(image, (int(self.x), int(self.y)), 3, (0, 0, 0) if color is None else color, -1)
+                cv2.circle(image, (int(self.x), int(self.y)), 5, (255, 255, 255), -1)
+                cv2.circle(image, (int(self.x), int(self.y)), 3, (0, 0, 0), -1)
