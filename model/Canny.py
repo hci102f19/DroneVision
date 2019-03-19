@@ -56,7 +56,7 @@ class Canny(object):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
             log.info(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > self.max_lines:
-            log.info(f'Too much data, increasing l_theta to {self.theta}', logging.INFO)
+            log.info(f'Too much data, increasing l_theta to {self.theta}')
             self.theta += int(round(self.theta_modifier * modifier, 0))
 
         self.last_frame_count = lines
