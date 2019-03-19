@@ -12,7 +12,7 @@ class ReverseHitBox(Box):
             return False
 
         if not self.xmin <= point.x_point <= self.xmax:
-            vector.set_yaw(self.calculate_horizontal(point.x_point))
+            vector.set_yaw(self.calculate_horizontal(point.x_point) * 2)
 
         """
         TODO: We dont do vertical movements

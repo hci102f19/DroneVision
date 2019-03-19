@@ -34,3 +34,7 @@ class Vector(object):
             if v != 0:
                 return False
         return True
+
+    def reset(self):
+        for k, v in self.__dict__.items():
+            setattr(self, k, 0)

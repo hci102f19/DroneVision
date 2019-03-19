@@ -14,13 +14,9 @@ class BebopVision(DroneVision):
             raise InvalidDroneType()
 
         self.bebop = BebopWrapper(bebop)
-        bebop.start_video_stream()
-
-        self.sleep = kwargs.get('sleep', 5)
 
     def start(self):
         self.buffer.start()
-        self.bebop.smart_sleep(self.sleep)
         self.bebop.start()
 
         self.vision_loop()
@@ -32,8 +28,10 @@ class BebopVision(DroneVision):
         vector = self.box_container.hit(self.get_center())
 
         if self.fly:
-            if vector.is_null():
-                vector.set_pitch(10)
+            vector.set_pitch(10)
+        elif self.man_rotate:
+            vector.reset()
+            vector.set_yaw(100)
 
         if self.send_commands:
             if not vector.is_null():
@@ -42,7 +40,5 @@ class BebopVision(DroneVision):
             log.info("Command ignored")
 
     def kill(self):
-        super().kill()
-
-        self.bebop.stop_video_stream()
         self.bebop.disconnect()
+        super().kill()

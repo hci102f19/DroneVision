@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 from time import sleep
 
 import cv2
@@ -19,12 +20,22 @@ class StreamBuffer(Buffer):
         env = os.environ.get('OPENCV_FFMPEG_CAPTURE_OPTIONS', None)
         if env is None or 'protocol_whitelist;file,rtp,udp' not in env:
             raise MissingEnvironmentVariable('Missing OPENCV_FFMPEG_CAPTURE_OPTIONS')
-
         if kwargs.get('record', False):
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
-            self.out = cv2.VideoWriter(f'./{uuid.uuid4().hex}.mp4', fourcc, stream.get(cv2.CAP_PROP_FPS), (x, y))
+            self.out = cv2.VideoWriter(f'{self.output_folder}/{uuid.uuid4().hex}.mp4', fourcc, 25, (x, y))
         else:
             self.out = None
+
+    @property
+    def filename(self):
+        timestamp = datetime.now()
+        return timestamp.strftime('%d-%m-%Y %H:%M%S')
+
+    @property
+    def output_folder(self):
+        folder = './output'
+        os.makedirs(folder, exist_ok=True)
+        return folder
 
     def run(self):
         self._running = True
@@ -37,7 +48,7 @@ class StreamBuffer(Buffer):
         while success and self._running:
             self._latest_frame = self.pre_process_frame(image)
 
-            if self.out is not None:
+            if self.out is not None and self._latest_frame is not None:
                 self.out.write(self._latest_frame)
 
             success, image = self.stream.read()

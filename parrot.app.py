@@ -11,7 +11,7 @@ success = bebop.connect(5)
 
 if success:
     cam = cv2.VideoCapture("./ParrotStream/bebop.sdp")
-    stream = StreamBuffer(cam, 640, 480)
+    stream = StreamBuffer(cam, 960, 720, record=True)
 
     drone_vision = BebopVision(bebop, stream)
     drone_vision.start()

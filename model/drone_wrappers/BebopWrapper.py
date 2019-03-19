@@ -10,6 +10,8 @@ class BebopWrapper(threading.Thread):
         super().__init__()
 
         self.bebop = bebop
+        self.bebop.set_indoor(True)
+        self.bebop.start_video_stream()
 
         self.__live = True
 
@@ -31,7 +33,7 @@ class BebopWrapper(threading.Thread):
     def run(self):
         if self.__live:
             self.bebop.safe_takeoff(5)
-            self.bebop.fly_direct(0, 0, 0, -100, 1)
+            # self.bebop.fly_direct(0, 0, 0, -100, 1)
         else:
             print("self.bebop.safe_takeoff(5)")
 
@@ -51,4 +53,5 @@ class BebopWrapper(threading.Thread):
             self.bebop.safe_land(5)
         else:
             print("self.bebop.safe_land(5)")
+        self.bebop.stop_video_stream()
         self.bebop.disconnect()
