@@ -1,37 +1,32 @@
-from model.extended_geometry.hitbox.HitBox import HitBox
+from model.extended_geometry.hitbox.LeftHitBox import LeftHitBox
 from model.extended_geometry.hitbox.ReverseHitBox import ReverseHitBox
+from model.extended_geometry.hitbox.RightHitBox import RightHitBox
 from model.flight.Vector import Vector
 from model.geometry.Point import Point
 
 
 class BoxContainer(object):
     def __init__(self, x, y, **kwargs):
-        hitbox_height = kwargs.get('hitbox_height', 0.70)
-        hitbox_width = kwargs.get('hitbox_width', 0.22)
-        hitbox_horizontal_offset = kwargs.get('hitbox_horizontal_offset', 0.16)
-        hitbox_vertical_offset = kwargs.get('hitbox_vertical_offset', -0.10)
-        hitbox_rotation = kwargs.get('hitbox_rotation', 30)
-
         # center_width = kwargs.get('w_center', 0.1)
         center_width = kwargs.get('w_center', 0.065)
         center_height = kwargs.get('h_center', 0.2)
         center_height_offset = kwargs.get('h_offset', 0.25)
 
-        self.lb = HitBox(
-            hitbox_horizontal_offset * x,
-            y - (hitbox_vertical_offset * y),
-            x * hitbox_width + (hitbox_horizontal_offset * x),
-            y * (1 - hitbox_height) - (hitbox_vertical_offset * y),
-            force=-20,
-            rotation=hitbox_rotation
+        self.lb = LeftHitBox(
+            x,
+            y,
+            width_top=0.97,
+            width_bottom=0.6,
+            height_top=0.6,
+            force=-20
         )
-        self.rb = HitBox(
-            x - (hitbox_horizontal_offset * x),
-            y - (hitbox_vertical_offset * y),
-            x * (1 - hitbox_width) - (hitbox_horizontal_offset * x),
-            y * (1 - hitbox_height) - (hitbox_vertical_offset * y),
-            force=20,
-            rotation=-hitbox_rotation
+        self.rb = RightHitBox(
+            x,
+            y,
+            width_top=0.97,
+            width_bottom=0.6,
+            height_top=0.6,
+            force=20
         )
 
         self.x = x
