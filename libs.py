@@ -82,6 +82,9 @@ def show(image, **kwargs):
     if len(image.shape) < 3:
         image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
+    if kwargs.get('size', None) is not None:
+        image = cv2.resize(image, kwargs.get('size'))
+
     if kwargs.get('fps', False):
 
         global fps_timer

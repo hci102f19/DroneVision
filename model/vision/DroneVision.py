@@ -52,7 +52,7 @@ class DroneVision(Canny):
         if self.view:
             self.render(frame)
 
-            key = show(frame, fps=True, fps_target=10, wait=1)
+            key = show(frame, fps=True, fps_target=10, wait=1, size=(640, 480))
 
             if key == 27:
                 self.kill()
