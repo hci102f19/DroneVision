@@ -30,7 +30,7 @@ class StreamBuffer(Buffer):
         self._running = True
 
         while not self.stream.isOpened():
-            log("Waiting for stream to open")
+            log.info("Waiting for stream to open")
             sleep(0.1)
 
         success, image = self.stream.read()

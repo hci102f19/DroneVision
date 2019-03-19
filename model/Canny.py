@@ -54,9 +54,9 @@ class Canny(object):
         #     self.theta += int(self.theta_modifier * 0.5)
         if lines < self.min_lines and self.theta > int(round(self.theta_modifier * modifier, 0)):
             self.theta -= int(round(self.theta_modifier * modifier, 0))
-            log(f'Not enough data, decreasing l_theta to {self.theta}', logging.INFO)
+            log.info(f'Not enough data, decreasing l_theta to {self.theta}')
         elif lines > self.max_lines:
-            log(f'Too much data, increasing l_theta to {self.theta}', logging.INFO)
+            log.info(f'Too much data, increasing l_theta to {self.theta}', logging.INFO)
             self.theta += int(round(self.theta_modifier * modifier, 0))
 
         self.last_frame_count = lines
@@ -124,7 +124,7 @@ class Canny(object):
                 self.newest_center = None
             return
         except TypeError as e:
-            log(str(e), logging.ERROR)
+            log.error(str(e))
             return
 
     def get_latest_clusters(self):

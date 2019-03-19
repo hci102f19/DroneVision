@@ -44,7 +44,7 @@ class SFiltering(object):
             # self.rejected_list.append(point)
             self.rejected_list = self.rejected_list[-(self.history_size - 1):] + [point]
             if len(self.rejected_list) >= self.history_size and not self.deviate(self.rejected_list, point):
-                log("SETTING NEW POINTS LIST!")
+                log.debug("SETTING NEW POINTS LIST!")
                 self.points.clear()
                 for p in self.rejected_list:
                     self.points.append(p)
@@ -65,6 +65,7 @@ class SFiltering(object):
     def get_mean(self):
         x = [point.x_point for point in self.points]
         y = [point.y_point for point in self.points]
+
         return Point.points2point(self.mean(x), self.mean(y))
 
     def get_point(self):

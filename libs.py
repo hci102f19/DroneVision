@@ -32,7 +32,7 @@ def make_video(images: list, file: str):
     # Release everything if job is finished
     out.release()
 
-    log("The output video is {}".format(file))
+    log.info("The output video is {}".format(file))
 
 
 def line_intersection(line1, line2):
