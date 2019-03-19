@@ -1,6 +1,6 @@
 class Key(object):
-    def __init__(self):
-        self.value = False
+    def __init__(self, value=False):
+        self.value = value
         self.pressed = False
 
     def set(self, key, value):

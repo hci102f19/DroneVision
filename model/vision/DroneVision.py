@@ -24,6 +24,7 @@ class DroneVision(Canny):
         self.view = True
 
         self.fly = Key()
+        self.send_commands = Key(True)
 
         self.color = (0, 0, 0)
 
@@ -57,6 +58,7 @@ class DroneVision(Canny):
                 self.kill()
 
             self.fly.set(key, 119)
+            self.send_commands.set(key, 115)
 
     def hit(self):
         if self.get_center() is not None:

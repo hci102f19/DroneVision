@@ -2,6 +2,7 @@ from pyparrot.Bebop import Bebop
 
 from model.drone_wrappers.BebopWrapper import BebopWrapper
 from model.exceptions import InvalidDroneType
+from model.logging import log
 from model.vision.DroneVision import DroneVision
 
 
@@ -34,8 +35,11 @@ class BebopVision(DroneVision):
             if vector.is_null():
                 vector.set_pitch(10)
 
-        if not vector.is_null():
-            self.bebop.enqueue_vector(vector)
+        if self.send_commands:
+            if not vector.is_null():
+                self.bebop.enqueue_vector(vector)
+        else:
+            log.info("Command ignored")
 
     def kill(self):
         super().kill()
