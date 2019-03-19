@@ -20,7 +20,7 @@ class BoxContainer(object):
             width_top=0.97,
             width_bottom=0.6,
             height_top=0.6,
-            force=-os.environ.get('speed', 20)
+            force=-int(os.environ.get('speed', 20))
         )
         self.rb = RightHitBox(
             x,
@@ -28,7 +28,7 @@ class BoxContainer(object):
             width_top=0.97,
             width_bottom=0.6,
             height_top=0.6,
-            force=os.environ.get('speed', 20)
+            force=int(os.environ.get('speed', 20))
         )
 
         self.x = x

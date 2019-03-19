@@ -30,7 +30,7 @@ class BebopVision(DroneVision):
         vector = self.box_container.hit(self.get_center())
 
         if self.fly:
-            vector.set_pitch(os.environ.get('speed', 20))
+            vector.set_pitch(int(os.environ.get('speed', 20)))
         elif self.man_rotate:
             vector.reset()
             vector.set_yaw(100)
