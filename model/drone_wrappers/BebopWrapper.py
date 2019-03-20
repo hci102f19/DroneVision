@@ -39,9 +39,6 @@ class BebopWrapper(threading.Thread):
 
         while self._running:
             self.sensor_callback()
-            if self.next_command is None:
-                self.bebop.smart_sleep(0.1)
-                continue
 
             if self.next_command is None:
                 cmd = Vector()
