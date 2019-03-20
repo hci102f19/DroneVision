@@ -17,6 +17,7 @@ class HitBox(Polygon):
 
     def hit(self, point: Point, vector: Vector):
         if self.intersects(point):
+            print(self.force)
             vector.set_roll(self.force)
             return True
         return False

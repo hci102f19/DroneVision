@@ -1,3 +1,4 @@
+import json
 import threading
 
 from pyparrot.Bebop import Bebop
@@ -12,6 +13,8 @@ class BebopWrapper(threading.Thread):
         self.bebop = bebop
         self.bebop.set_indoor(True)
         self.bebop.start_video_stream()
+
+        self.battery_level = None
 
         self.__live = True
 
@@ -32,12 +35,15 @@ class BebopWrapper(threading.Thread):
 
     def run(self):
         if self.__live:
+            self.bebop.flat_trim(0)
+            self.bebop.ask_for_state_update()
             self.bebop.safe_takeoff(5)
-            # self.bebop.fly_direct(0, 0, 0, -100, 1)
+            self.bebop.fly_direct(0, 0, 0, -100, 0.5)
         else:
             print("self.bebop.safe_takeoff(5)")
 
         while self._running:
+            self.sensor_callback()
             if self.next_command is None:
                 self.bebop.smart_sleep(0.1)
                 continue
@@ -45,7 +51,9 @@ class BebopWrapper(threading.Thread):
             cmd, self.next_command = self.next_command, None
 
             if self.__live:
-                self.bebop.fly_direct(**cmd.emit(), duration=0.1)
+                with open('flight.log', 'a') as f:
+                    f.write(json.dumps(cmd.emit()) + '\n')
+                self.bebop.fly_direct(**cmd.emit(), duration=0.25)
             else:
                 print(cmd.emit())
 
@@ -55,3 +63,8 @@ class BebopWrapper(threading.Thread):
             print("self.bebop.safe_land(5)")
         self.bebop.stop_video_stream()
         self.bebop.disconnect()
+
+    def sensor_callback(self):
+        if self.battery_level is None or self.bebop.sensors.battery != self.battery_level:
+            self.battery_level = self.bebop.sensors.battery
+            print(f'battery_level: {self.battery_level}')

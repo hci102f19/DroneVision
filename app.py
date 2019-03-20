@@ -1,5 +1,6 @@
 import glob
 import random
+
 import cv2
 
 from model.buffers.FrameBuffer import FrameBuffer

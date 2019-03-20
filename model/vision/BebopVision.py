@@ -29,11 +29,14 @@ class BebopVision(DroneVision):
 
         vector = self.box_container.hit(self.get_center())
 
-        if self.fly:
+        if self.fly and self.get_center() is not None and vector.is_null():
+            log.debug("fly is true")
             vector.set_pitch(int(os.environ.get('speed', 20)))
         elif self.man_rotate:
             vector.reset()
             vector.set_yaw(100)
+        else:
+            log.debug("fly is false")
 
         if self.send_commands:
             if not vector.is_null():
