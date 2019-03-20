@@ -16,8 +16,6 @@ class BebopWrapper(threading.Thread):
 
         self.battery_level = None
 
-        self.__live = True
-
         self._running = True
         self.next_command = None
 
@@ -34,13 +32,10 @@ class BebopWrapper(threading.Thread):
         self.next_command = vector
 
     def run(self):
-        if self.__live:
-            self.bebop.flat_trim(0)
-            self.bebop.ask_for_state_update()
-            self.bebop.safe_takeoff(5)
-            self.bebop.fly_direct(0, 0, 0, -100, 0.5)
-        else:
-            print("self.bebop.safe_takeoff(5)")
+        self.bebop.flat_trim(0)
+        self.bebop.ask_for_state_update()
+        self.bebop.safe_takeoff(5)
+        self.bebop.fly_direct(0, 0, 0, -100, 0.5)
 
         while self._running:
             self.sensor_callback()
@@ -48,19 +43,16 @@ class BebopWrapper(threading.Thread):
                 self.bebop.smart_sleep(0.1)
                 continue
 
-            cmd, self.next_command = self.next_command, None
-
-            if self.__live:
-                with open('flight.log', 'a') as f:
-                    f.write(json.dumps(cmd.emit()) + '\n')
-                self.bebop.fly_direct(**cmd.emit(), duration=0.25)
+            if self.next_command is None:
+                cmd = Vector()
             else:
-                print(cmd.emit())
+                cmd, self.next_command = self.next_command, None
 
-        if self.__live:
-            self.bebop.safe_land(5)
-        else:
-            print("self.bebop.safe_land(5)")
+            with open('flight.log', 'a') as f:
+                f.write(json.dumps(cmd.emit()) + '\n')
+            self.bebop.fly_direct(**cmd.emit(), duration=0.25)
+
+        self.bebop.safe_land(5)
         self.bebop.stop_video_stream()
         self.bebop.disconnect()
 
